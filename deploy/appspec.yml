@@ -1,0 +1,15 @@
+version: 0.0
+os: linux
+files:
+  - source: docker-compose.yml
+    destination: /home/grademypaper/docker-compose
+  - source: grademypaper.nginx.conf
+    destination: /etc/nginx/sites-enabled
+hooks:
+  AfterInstall:
+    - location: AfterInstall.sh
+      timeout: 300
+      runas: grademypaper
+    - location: AfterInstall2.sh
+      timeout: 300
+      runas: root

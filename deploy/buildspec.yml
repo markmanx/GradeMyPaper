@@ -1,0 +1,24 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+  pre_build:
+    commands:
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+  build:
+    commands:
+      - docker build --build-arg REACT_APP_AUTH0_DOMAIN --build-arg REACT_APP_AUTH0_CLIENT_ID --build-arg REACT_APP_STRIPE_PUBLISHABLE_KEY --build-arg REACT_APP_BASE_URL --build-arg REACT_APP_GRAPHQL_ENDPOINT -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$FRONTEND_IMAGE_REPO_NAME:latest -f deploy/dockerfiles/Dockerfile-frontend ./frontend
+      - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$BACKEND_IMAGE_REPO_NAME:latest -f deploy/dockerfiles/Dockerfile-backend ./backend
+  post_build:
+    commands:
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$BACKEND_IMAGE_REPO_NAME:latest
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$FRONTEND_IMAGE_REPO_NAME:latest
+artifacts:
+  files:
+    - deploy/appspec.yml
+    - deploy/scripts/*
+    - backend/prisma/docker-compose.yml
+    - deploy/grademypaper.nginx.conf
+  discard-paths: yes

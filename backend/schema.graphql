@@ -1,0 +1,18 @@
+type User {
+  id: String!
+  email: String!
+  credits: Int!
+}
+
+type Query {
+  me: User
+  protectedQuery: String!
+}
+
+type CheckoutSessionStatus {
+  sessionId: String
+}
+
+type Mutation {
+  createCheckoutSession: CheckoutSessionStatus!
+}

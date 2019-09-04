@@ -1,0 +1,7 @@
+type User {
+  id: ID! @id
+  email: String!
+  stripeCustomerId: String
+  auth0Id: String! @unique
+  credits: Int!
+}
