@@ -1,8 +1,18 @@
 import React from 'react';
+import styled from 'styled-components';
 import { useQuery } from '@apollo/react-hooks';
 
-import { useAuth0 } from '../context/auth0';
-import { meQuery } from '../gql';
+import logo from './assets/logo.png';
+import { useAuth0 } from '../../context/auth0';
+import { meQuery } from '../../gql';
+
+const Wrapper = styled.div`
+  background-color: blue;
+`;
+
+const Logo = styled.img`
+  width: 250px;
+`;
 
 export const Header = () => {
   const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
@@ -11,7 +21,8 @@ export const Header = () => {
   const ready = !loading && !error && data && data.me;
 
   return (
-    <div>
+    <Wrapper>
+      <Logo src={logo} />
       {!isAuthenticated && (
         <button onClick={() => loginWithRedirect({})}>Log in</button>
       )}
@@ -26,6 +37,6 @@ export const Header = () => {
           <button onClick={() => logout()}>Log out</button>
         </>
       )}
-    </div>
+    </Wrapper>
   );
 };
