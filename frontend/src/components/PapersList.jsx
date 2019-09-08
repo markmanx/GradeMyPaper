@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { List } from '@material-ui/core';
 
 import { papers } from '../data/papers';
-import { PaperListItem } from './PaperListItem';
+import { PaperListItem } from '../components';
 
 export const PapersList = () => {
   return (
