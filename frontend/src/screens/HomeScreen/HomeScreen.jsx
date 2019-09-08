@@ -29,7 +29,7 @@ const PaperImg = styled.img`
 `;
 
 const AboutMeSection = styled(Section)`
-  margin-top: -115px;
+  margin-top: -145px;
 `;
 
 const AmandaImg = styled.img`
@@ -60,7 +60,7 @@ export const HomeScreen = () => {
             </SlantedBackground>
           }
         >
-          <Padder paddingTop={8} paddingBottom={10}>
+          <Padder paddingTop={8} paddingBottom={12}>
             <Grid container spacing={4}>
               <Grid item md={8}>
                 <Text variant="h1">
