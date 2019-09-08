@@ -8,14 +8,24 @@ const Wrapper = styled.section`
   justify-content: center;
 `;
 
+const Background = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+`;
+
 const InnerWrapper = styled.div`
+  position: relative;
   width: 100%;
   max-width: 1000px;
 `;
 
-export const Section = ({ children }) => {
+export const Section = ({ children, bgChildren }) => {
   return (
     <Wrapper>
+      <Background>{bgChildren}</Background>
       <InnerWrapper>{children}</InnerWrapper>
     </Wrapper>
   );

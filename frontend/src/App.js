@@ -1,11 +1,9 @@
 import React from 'react';
-import { ThemeProvider } from 'styled-components/macro';
-import { ThemeProvider as MuiThemeProvider } from '@material-ui/styles';
 
+import { ThemeProviders } from './context/ThemeProviders';
 import { Auth0Provider } from './context/auth0';
 import { Provider as ApolloProvider } from './helpers/apolloClient';
 import { RouteMatcher } from './helpers/routes';
-import { theme } from './helpers/themeHelpers';
 import { GlobalStyle } from './helpers/globalStyles';
 import { Header } from './components';
 
@@ -18,13 +16,11 @@ function App() {
         redirect_uri={window.location.origin}
         audience={`https://${process.env.REACT_APP_AUTH0_DOMAIN}/api/v2/`}
       >
-        <ThemeProvider theme={theme}>
-          <MuiThemeProvider theme={theme}>
-            <GlobalStyle />
-            <Header />
-            <RouteMatcher />
-          </MuiThemeProvider>
-        </ThemeProvider>
+        <ThemeProviders>
+          <GlobalStyle />
+          <Header />
+          <RouteMatcher />
+        </ThemeProviders>
       </Auth0Provider>
     </ApolloProvider>
   );
