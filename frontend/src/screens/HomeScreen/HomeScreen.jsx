@@ -59,7 +59,7 @@ export const HomeScreen = () => {
             </SlantedBackground>
           }
         >
-          <Padder paddingTop={7} paddingBottom={12}>
+          <Padder paddingTop={8} paddingBottom={10}>
             <Grid container spacing={4}>
               <Grid item md={8}>
                 <Text variant="h1">
