@@ -32,8 +32,7 @@ const AboutMeSection = styled(Section)`
 `;
 
 const AmandaImg = styled.img`
-  width: 250px;
-  height: 250px;
+  width: 100%;
   border-radius: 100%;
 `;
 
@@ -77,7 +76,40 @@ export const HomeScreen = () => {
         </Section>
       </ThemeProviders>
       <AboutMeSection>
-        <AmandaImg src={amandaImg} />
+        <Grid container spacing={6}>
+          <Grid item md={4}>
+            <AmandaImg src={amandaImg} />
+          </Grid>
+          <Grid item md={8}>
+            <Padder paddingTop={8}>
+              <Text variant="h3">About me</Text>
+              <Padder paddingTop="0.5">
+                <Text variant="h4" bold>
+                  I'm Amanda. I help A-level biology students prepare for exams
+                  and improve their exam technique.
+                </Text>
+              </Padder>
+              <Padder paddingTop="2">
+                <Text variant="h4">My Story</Text>
+              </Padder>
+              <Padder paddingTop="0.5">
+                <Text>
+                  I've been a qualified biology teacher for about 10 years now.
+                  The biggest challenge my students have is application of their
+                  knowledge to the exam paper. It is essential that you do as
+                  many past exam papers as you can in order to practice for the
+                  exam. Although mark schemes are freely available, they are
+                  unable to show you how to correctly structure an answer to
+                  meet the allocated marks, and they cannot provide the feedback
+                  you need in order to begin writing better answers. Having your
+                  paper marked by a qualified Biology teacher, with grades,
+                  comments and suggestions will give you the right tools to
+                  improve your exam technique.
+                </Text>
+              </Padder>
+            </Padder>
+          </Grid>
+        </Grid>
       </AboutMeSection>
     </>
   );

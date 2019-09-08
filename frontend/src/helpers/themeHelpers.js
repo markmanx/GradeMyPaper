@@ -9,11 +9,15 @@ const theme = {
     fontFamily: 'Montserrat',
     body1: {
       fontSize: 14,
-      lineHeight: 1.2
+      lineHeight: 1.5
     },
     h1: {
       fontSize: 32,
       fontWeight: 600,
+      lineHeight: 1.2
+    },
+    h3: {
+      fontSize: 24,
       lineHeight: 1.2
     },
     h4: {
