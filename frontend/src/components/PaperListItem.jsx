@@ -25,18 +25,29 @@ const ActionsWrapper = styled.div`
 export const PaperListItem = ({ paper }) => {
   return (
     <Wrapper>
-      <ListItem button>
+      <ListItem
+        button
+        onClick={() => {
+          window.open(paper.questionPaperUrl, '_blank');
+        }}
+      >
         <ListItemAvatar>
           <Avatar></Avatar>
         </ListItemAvatar>
         <ListItemText primary={paper.title} secondary={paper.qualification} />
+        <ListItemSecondaryAction>
+          <ActionsWrapper>
+            <Button
+              onClick={() => {
+                window.open(paper.markSchemeUrl, '_blank');
+              }}
+            >
+              Download mark scheme
+            </Button>
+            <Button>Get grade</Button>
+          </ActionsWrapper>
+        </ListItemSecondaryAction>
       </ListItem>
-      <ListItemSecondaryAction>
-        <ActionsWrapper>
-          <Button>Download mark scheme</Button>
-          <Button>Get grade</Button>
-        </ActionsWrapper>
-      </ListItemSecondaryAction>
     </Wrapper>
   );
 };
