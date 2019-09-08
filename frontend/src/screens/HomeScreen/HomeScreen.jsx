@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components/macro';
-import { Grid, Hidden } from '@material-ui/core';
+import { Grid, Hidden, Card, CardContent } from '@material-ui/core';
 
 import { ThemeProviders } from '../../context/ThemeProviders';
 import paper from './assets/paper.jpg';
@@ -42,7 +42,7 @@ export const HomeScreen = () => {
       <ThemeProviders type="dark">
         <Section
           bgChildren={
-            <SlantedBackground>
+            <SlantedBackground slantBottom>
               <Hidden smDown>
                 <Section>
                   <Grid container justify="flex-end" spacing={4}>
@@ -78,7 +78,7 @@ export const HomeScreen = () => {
         </Section>
       </ThemeProviders>
       <AboutMeSection>
-        <Grid container spacing={6}>
+        <Grid container spacing={4}>
           <Grid item md={4}>
             <AmandaImg src={amandaImg} />
           </Grid>
@@ -113,6 +113,59 @@ export const HomeScreen = () => {
           </Grid>
         </Grid>
       </AboutMeSection>
+      <Section bgChildren={<SlantedBackground slantTop></SlantedBackground>}>
+        <Padder paddingBottom={10}>
+          <Grid container spacing={4}>
+            <Grid item md={4}>
+              <Padder paddingTop={2} paddingBottom={1}>
+                <Text variant="h1">Pricing</Text>
+              </Padder>
+              <Card>
+                <CardContent>
+                  <Text variant="h3" bold>
+                    Paper grading
+                  </Text>
+                  <Padder paddingTop={1}>
+                    <Text variant="h4">
+                      Get graded and extensive feedback on your practice paper,
+                      within 48 hours.
+                    </Text>
+                  </Padder>
+                  <Padder paddingTop={4}>
+                    <Text variant="h1" inline>
+                      £30
+                    </Text>
+                    <Text variant="h3" inline>
+                      {' '}
+                      per paper
+                    </Text>
+                  </Padder>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item md={8}>
+              <ThemeProviders type="dark">
+                <Padder paddingTop={8}>
+                  <Text variant="h3" bold>
+                    How it works
+                  </Text>
+                  <Padder paddingTop={0.5}>
+                    <Text>
+                      Pick one of the practice papers below, submit your answers
+                      through our site (you don’t need a scanner, just a device
+                      with a camera), and I’ll get back to you with a grade and
+                      comments in 48 hours.
+                    </Text>
+                  </Padder>
+                  <Padder paddingTop={1}>
+                    <Button variant="contained">See practice papers</Button>
+                  </Padder>
+                </Padder>
+              </ThemeProviders>
+            </Grid>
+          </Grid>
+        </Padder>
+      </Section>
     </>
   );
 };

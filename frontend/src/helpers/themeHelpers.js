@@ -1,6 +1,8 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
 
+const BASE_UNIT = 20;
+
 const theme = {
   palette: {
     primary: blue
@@ -29,7 +31,14 @@ const theme = {
     primary:
       'linear-gradient(90deg, rgba(51,89,245,1) 0%, rgba(69,149,236,1) 100%)'
   },
-  baseUnit: 20
+  overrides: {
+    MuiCardContent: {
+      root: {
+        padding: BASE_UNIT * 1.5
+      }
+    }
+  },
+  baseUnit: BASE_UNIT
 };
 
 export const lightTheme = createMuiTheme(theme);
