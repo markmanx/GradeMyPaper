@@ -10,7 +10,7 @@ const theme = {
   typography: {
     fontFamily: 'Montserrat',
     body1: {
-      fontSize: 14,
+      fontSize: 16,
       lineHeight: 1.5
     },
     h1: {
