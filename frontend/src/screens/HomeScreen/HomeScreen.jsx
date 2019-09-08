@@ -174,6 +174,13 @@ export const HomeScreen = () => {
         </Section>
       </Padder>
       <Section bgChildren={<SlantedBackground></SlantedBackground>}>
+        <ThemeProviders type="dark">
+          <Padder paddingBottom={1}>
+            <Text variant="h3" bold>
+              Practice papers
+            </Text>
+          </Padder>
+        </ThemeProviders>
         <Padder paddingBottom={5}>
           <PapersList />
         </Padder>

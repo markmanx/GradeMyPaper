@@ -15,6 +15,10 @@ const Wrapper = styled.div`
   ${({ theme }) => css`
     & .light-MuiListItem-root {
       background-color: ${theme.palette.common.white};
+
+      &.light-MuiListItem-button:hover {
+        background-color: ${theme.palette.grey['200']};
+      }
     }
 
     & .light-MuiAvatar-root {
@@ -39,6 +43,7 @@ export const PaperListItem = ({ paper }) => {
         onClick={() => {
           window.open(paper.questionPaperUrl, '_blank');
         }}
+        divider
       >
         <ListItemAvatar>
           <Avatar>
@@ -55,7 +60,7 @@ export const PaperListItem = ({ paper }) => {
             >
               Download mark scheme
             </Button>
-            <Button>Get grade</Button>
+            <Button>Get feedback</Button>
           </ActionsWrapper>
         </ListItemSecondaryAction>
       </ListItem>
