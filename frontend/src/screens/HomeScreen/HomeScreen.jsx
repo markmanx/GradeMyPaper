@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components/macro';
-import { Grid } from '@material-ui/core';
+import { Grid, Hidden } from '@material-ui/core';
 
 import { ThemeProviders } from '../../context/ThemeProviders';
 import paper from './assets/paper.jpg';
@@ -43,13 +43,15 @@ export const HomeScreen = () => {
         <Section
           bgChildren={
             <SlantedBackground>
-              <Section>
-                <Grid container justify="flex-end" spacing={4}>
-                  <Grid item md={4}>
-                    <PaperImg src={paper} />
+              <Hidden smDown>
+                <Section>
+                  <Grid container justify="flex-end" spacing={4}>
+                    <Grid item md={4}>
+                      <PaperImg src={paper} />
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Section>
+                </Section>
+              </Hidden>
             </SlantedBackground>
           }
         >

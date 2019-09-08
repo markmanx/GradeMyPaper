@@ -1,11 +1,19 @@
 import React from 'react';
-import styled from 'styled-components/macro';
+import styled, { css } from 'styled-components/macro';
 
 const Wrapper = styled.section`
   position: relative;
   width: 100%;
   display: flex;
   justify-content: center;
+
+  ${({ theme }) => css`
+    padding: 0 ${theme.baseUnit * 1.5}px;
+
+    ${theme.breakpoints.up('md')} {
+      padding: 0;
+    }
+  `}
 `;
 
 const Background = styled.div`
