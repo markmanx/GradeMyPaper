@@ -6,6 +6,10 @@ const Wrapper = styled.div`
   & .dark-MuiButton-root,
   .light-MuiButton-root {
     text-transform: none;
+
+    ${({ theme }) => css`
+      font-weight: 600;
+    `}
   }
 `;
 

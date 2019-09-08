@@ -22,9 +22,9 @@ const InnerWrapper = styled.div`
   max-width: 1000px;
 `;
 
-export const Section = ({ children, bgChildren }) => {
+export const Section = ({ children, bgChildren, className }) => {
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <Background>{bgChildren}</Background>
       <InnerWrapper>{children}</InnerWrapper>
     </Wrapper>
