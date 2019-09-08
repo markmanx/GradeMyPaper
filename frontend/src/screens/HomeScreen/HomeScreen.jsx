@@ -9,7 +9,8 @@ import {
   Section,
   SlantedBackground,
   Padder,
-  Button
+  Button,
+  PapersList
 } from '../../components';
 import amandaImg from './assets/amanda.png';
 
@@ -120,7 +121,7 @@ export const HomeScreen = () => {
       <Padder paddingTop={4}>
         <Section bgChildren={<SlantedBackground slantTop></SlantedBackground>}>
           <PricingContent>
-            <Padder paddingBottom={10}>
+            <Padder paddingBottom={5}>
               <Grid container spacing={4} alignItems="flex-end">
                 <Grid item md={4}>
                   <Padder paddingTop={2} paddingBottom={1}>
@@ -172,6 +173,11 @@ export const HomeScreen = () => {
           </PricingContent>
         </Section>
       </Padder>
+      <Section bgChildren={<SlantedBackground></SlantedBackground>}>
+        <Padder paddingBottom={5}>
+          <PapersList />
+        </Padder>
+      </Section>
     </>
   );
 };
