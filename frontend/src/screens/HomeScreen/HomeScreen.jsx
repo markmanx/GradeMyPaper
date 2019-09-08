@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components/macro';
 import { Grid, Hidden, Card, CardContent } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 import { ThemeProviders } from '../../context/ThemeProviders';
 import paper from './assets/paper.jpg';
@@ -75,7 +76,9 @@ export const HomeScreen = () => {
                   </Text>
                 </Padder>
                 <Padder paddingTop={1.5}>
-                  <Button variant="contained">See practice papers</Button>
+                  <Button href="#practice-papers" variant="contained">
+                    See practice papers
+                  </Button>
                 </Padder>
               </Grid>
             </Grid>
@@ -164,7 +167,9 @@ export const HomeScreen = () => {
                       </Text>
                     </Padder>
                     <Padder paddingTop={1}>
-                      <Button variant="contained">See practice papers</Button>
+                      <Button href="#practice-papers" variant="contained">
+                        See practice papers
+                      </Button>
                     </Padder>
                   </ThemeProviders>
                 </Grid>
@@ -174,6 +179,7 @@ export const HomeScreen = () => {
         </Section>
       </Padder>
       <Section bgChildren={<SlantedBackground></SlantedBackground>}>
+        <div id="practice-papers"></div>
         <ThemeProviders type="dark">
           <Padder paddingBottom={1}>
             <Text variant="h3" bold>
