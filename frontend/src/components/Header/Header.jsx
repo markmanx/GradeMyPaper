@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/macro';
 import { useQuery } from '@apollo/react-hooks';
+import { Link } from 'react-router-dom';
 
 import { ThemeProviders } from '../../context/ThemeProviders';
 import logo from './assets/logo.png';
@@ -45,7 +46,9 @@ export const Header = () => {
         <Section>
           <Padder paddingVertical={1.5}>
             <WrapperInner>
-              <Logo src={logo} />
+              <Link to="/">
+                <Logo src={logo} />
+              </Link>
               {ready && (
                 <div>
                   Logged in as {data.me.email} Credits: {data.me.credits}
