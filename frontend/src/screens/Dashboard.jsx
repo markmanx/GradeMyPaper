@@ -2,6 +2,7 @@ import React from 'react';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 
 import { protectedQuery, createCheckoutSessionMutation } from '../gql';
+import { Section, SlantedBackground, PapersList, Padder } from '../components';
 
 export const Dashboard = () => {
   const { loading, error, data } = useQuery(protectedQuery);
@@ -32,9 +33,10 @@ export const Dashboard = () => {
   };
 
   return (
-    <div>
-      This is a protected screen. {data.protectedQuery}
-      <button onClick={onCheckout}>Checkout</button>
-    </div>
+    <Section bgChildren={<SlantedBackground slantBottom />}>
+      <Padder paddingTop={8} paddingBottom={6}>
+        <PapersList />
+      </Padder>
+    </Section>
   );
 };
