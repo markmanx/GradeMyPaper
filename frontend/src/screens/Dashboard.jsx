@@ -1,5 +1,6 @@
 import React from 'react';
 import { useQuery, useMutation } from '@apollo/react-hooks';
+import { Tabs, Tab, TabPanel } from '@material-ui/core';
 
 import { protectedQuery, createCheckoutSessionMutation } from '../gql';
 import { Section, SlantedBackground, PapersList, Padder } from '../components';
@@ -7,6 +8,7 @@ import { Section, SlantedBackground, PapersList, Padder } from '../components';
 export const Dashboard = () => {
   const { loading, error, data } = useQuery(protectedQuery);
   const [mutation] = useMutation(createCheckoutSessionMutation);
+  const [tabIndex, setTabIndex] = React.useState(0);
 
   if (loading || error || !data) {
     return <div>Cannot load data</div>;
@@ -32,10 +34,18 @@ export const Dashboard = () => {
       });
   };
 
+  const onTabChange = (_, tabIndex) => {
+    setTabIndex(tabIndex);
+  };
+
   return (
     <Section bgChildren={<SlantedBackground slantBottom />}>
       <Padder paddingTop={8} paddingBottom={6}>
-        <PapersList />
+        <Tabs textColor="secondary" value={tabIndex} onChange={onTabChange}>
+          <Tab label="Practice papers" />
+          <Tab label="My grades" />
+        </Tabs>
+        {tabIndex === 0 && <PapersList />}
       </Padder>
     </Section>
   );

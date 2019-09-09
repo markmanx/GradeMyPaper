@@ -7,3 +7,4 @@ export * from './Button';
 export * from './PapersList';
 export * from './PaperListItem/PaperListItem';
 export * from './ProtectedRoute';
+export * from './TabBar';
