@@ -4,6 +4,7 @@ import { Tabs, Tab, TabPanel } from '@material-ui/core';
 
 import { protectedQuery, createCheckoutSessionMutation } from '../gql';
 import { Section, SlantedBackground, PapersList, Padder } from '../components';
+import { ThemeProviders } from '../context/ThemeProviders';
 
 export const Dashboard = () => {
   const { loading, error, data } = useQuery(protectedQuery);
@@ -41,10 +42,19 @@ export const Dashboard = () => {
   return (
     <Section bgChildren={<SlantedBackground slantBottom />}>
       <Padder paddingTop={8} paddingBottom={6}>
-        <Tabs textColor="secondary" value={tabIndex} onChange={onTabChange}>
-          <Tab label="Practice papers" />
-          <Tab label="My grades" />
-        </Tabs>
+        <Padder paddingBottom={1}>
+          <ThemeProviders type="dark">
+            <Tabs
+              textColor="primary"
+              indicatorColor="primary"
+              value={tabIndex}
+              onChange={onTabChange}
+            >
+              <Tab label="Practice papers" />
+              <Tab label="My grades" />
+            </Tabs>
+          </ThemeProviders>
+        </Padder>
         {tabIndex === 0 && <PapersList />}
       </Padder>
     </Section>
