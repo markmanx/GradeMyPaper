@@ -1,8 +1,9 @@
 import React from 'react';
-import styled from 'styled-components/macro';
+import styled, { css } from 'styled-components/macro';
 import { useQuery } from '@apollo/react-hooks';
 import { Link } from 'react-router-dom';
 
+import { useRouter } from '../../hooks/useRouter';
 import { ThemeProviders } from '../../context/ThemeProviders';
 import logo from './assets/logo.png';
 import { useAuth0 } from '../../context/auth0';
@@ -28,9 +29,20 @@ const Logo = styled.img`
   width: 250px;
 `;
 
+const NavWrapper = styled.div`
+  display: flex;
+
+  ${({ theme }) => css`
+    & > *:not(:first-child) {
+      padding-left: ${theme.baseUnit}px;
+    }
+  `}
+`;
+
 export const Header = () => {
   const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const { data, loading, error } = useQuery(meQuery);
+  const { history } = useRouter();
 
   const ready = !loading && !error && data && data.me;
 
@@ -49,19 +61,30 @@ export const Header = () => {
               <Link to="/">
                 <Logo src={logo} />
               </Link>
-              {ready && (
-                <div>
-                  Logged in as {data.me.email} Credits: {data.me.credits}
-                </div>
-              )}
-
-              <Button
-                variant={isAuthenticated ? 'default' : 'contained'}
-                size="small"
-                onClick={isAuthenticated ? onSignOut : onSignIn}
-              >
-                {isAuthenticated ? 'Sign out' : 'Sign in'}
-              </Button>
+              <NavWrapper>
+                {ready && (
+                  <div>
+                    Logged in as {data.me.email} Credits: {data.me.credits}
+                  </div>
+                )}
+                {isAuthenticated && (
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      history.push('/dashboard');
+                    }}
+                  >
+                    Dashboard
+                  </Button>
+                )}
+                <Button
+                  variant={isAuthenticated ? 'default' : 'contained'}
+                  size="small"
+                  onClick={isAuthenticated ? onSignOut : onSignIn}
+                >
+                  {isAuthenticated ? 'Sign out' : 'Sign in'}
+                </Button>
+              </NavWrapper>
             </WrapperInner>
           </Padder>
         </Section>
