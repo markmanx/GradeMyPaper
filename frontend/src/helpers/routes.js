@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
 import { Header } from '../components';
-import { LogoutScreen, HomeScreen, ProtectedScreen } from '../screens';
-import { ProtectedRoute } from '../components/ProtectedRoute';
+import { LogoutScreen, HomeScreen, Dashboard } from '../screens';
+import { ProtectedRoute } from '../components';
 
 const history = createBrowserHistory();
 
@@ -16,7 +16,7 @@ export const RouteMatcher = () => {
         <Switch>
           <Route path="/" exact component={HomeScreen} />
           <Route path="/logout" exact component={LogoutScreen} />
-          <ProtectedRoute path="/protected" exact component={ProtectedScreen} />
+          <ProtectedRoute path="/dashboard" exact component={Dashboard} />
         </Switch>
       </Router>
     </>

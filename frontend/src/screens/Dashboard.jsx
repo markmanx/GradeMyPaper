@@ -3,7 +3,7 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 
 import { protectedQuery, createCheckoutSessionMutation } from '../gql';
 
-export const ProtectedScreen = () => {
+export const Dashboard = () => {
   const { loading, error, data } = useQuery(protectedQuery);
   const [mutation] = useMutation(createCheckoutSessionMutation);
 

@@ -1,3 +1,3 @@
 export * from './HomeScreen/HomeScreen';
 export * from './LogoutScreen';
-export * from './ProtectedScreen';
+export * from './Dashboard';
