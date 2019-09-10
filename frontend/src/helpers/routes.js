@@ -16,7 +16,6 @@ export const RouteMatcher = () => {
           <Route path="/logout" exact component={LogoutScreen} />
           <ProtectedRoute path="/dashboard" exact component={Dashboard} />
         </Switch>
-        )}
       </CustomRouter>
     </>
   );

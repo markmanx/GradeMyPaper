@@ -64,15 +64,11 @@ export const HomeScreen = () => {
           <Padder paddingTop={8} paddingBottom={12}>
             <Grid container spacing={4}>
               <Grid item md={8}>
-                <Text variant="h1">
-                  Get feedback on your practice papers from a qualified biology
-                  teacher.
-                </Text>
+                <Text variant="h1">Improve your exam technique.</Text>
                 <Padder paddingTop={0.5}>
                   <Text variant="h4">
-                    Practice as many papers as you can, use the supplied mark
-                    scheme or get feedback from qualified biology teachers in
-                    under 48 hours.
+                    Get feedback on your practice papers from a qualified
+                    biology teacher, within 48 hours.
                   </Text>
                 </Padder>
                 <Padder paddingTop={1.5}>
