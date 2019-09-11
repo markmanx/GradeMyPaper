@@ -1,10 +1,10 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 
 export const RouterContext = React.createContext({});
 
-export const CustomRouter = ({ children }) => (
-  <BrowserRouter>
+export const CustomRouter = ({ children, history }) => (
+  <Router history={history}>
     <Route>
       {routeProps => (
         <RouterContext.Provider value={routeProps}>
@@ -12,5 +12,5 @@ export const CustomRouter = ({ children }) => (
         </RouterContext.Provider>
       )}
     </Route>
-  </BrowserRouter>
+  </Router>
 );

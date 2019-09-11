@@ -1,6 +1,6 @@
 import React from 'react';
-import { RouterContext } from '../context/RouterContext.jsx';
+import { __RouterContext } from 'react-router-dom';
 
 export const useRouter = () => {
-  return React.useContext(RouterContext);
+  return React.useContext(__RouterContext);
 };

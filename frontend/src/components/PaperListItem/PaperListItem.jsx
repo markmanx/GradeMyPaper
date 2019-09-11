@@ -10,6 +10,7 @@ import {
 
 import { Button } from '../../components';
 import aqaLogoImg from './assets/aqa-board.png';
+import { useRouter } from '../../hooks/useRouter.js';
 
 const Wrapper = styled.div`
   ${({ theme }) => css`
@@ -36,6 +37,12 @@ const AqaLogo = styled.img`
 `;
 
 export const PaperListItem = ({ paper }) => {
+  const { history } = useRouter();
+
+  const onGetFeedback = () => {
+    history.push(`/request-feedback/${paper.id}`);
+  };
+
   return (
     <Wrapper>
       <ListItem
@@ -60,7 +67,7 @@ export const PaperListItem = ({ paper }) => {
             >
               Download mark scheme
             </Button>
-            <Button>Get feedback</Button>
+            <Button onClick={onGetFeedback}>Get feedback</Button>
           </ActionsWrapper>
         </ListItemSecondaryAction>
       </ListItem>
