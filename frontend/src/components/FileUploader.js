@@ -28,10 +28,18 @@ const Wrapper = styled.div`
   }
 `;
 
-export const FileUploader = () => {
+export const FileUploader = ({ width }) => {
+  console.log(width);
+
   return (
     <Wrapper>
-      <Dashboard uppy={uppy} plugins={['Webcam']} inline width={800} />
+      <Dashboard
+        uppy={uppy}
+        plugins={['Webcam']}
+        inline
+        width={width}
+        key={width}
+      />
     </Wrapper>
   );
 };
