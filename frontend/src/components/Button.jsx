@@ -1,8 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components/macro';
 import { Button as MuiButton } from '@material-ui/core';
-import { easing } from '@material-ui/core/styles';
-import { duration } from '@material-ui/core/styles';
 
 const Wrapper = styled.div`
   & .dark-MuiButton-root,

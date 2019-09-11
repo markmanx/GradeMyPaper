@@ -1,7 +1,6 @@
 import React from 'react';
-import styled, { css } from 'styled-components/macro';
+import styled from 'styled-components/macro';
 import { Grid, Hidden, Card, CardContent } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 
 import { ThemeProviders } from '../../context/ThemeProviders';
 import paper from './assets/paper.jpg';
@@ -14,14 +13,6 @@ import {
   PapersList
 } from '../../components';
 import amandaImg from './assets/amanda.png';
-
-const TextWrapper = styled.div`
-  width: 70%;
-
-  & .MuiButtonBase-root-38 {
-    background-color: red;
-  }
-`;
 
 const PaperImg = styled.img`
   width: 100%;

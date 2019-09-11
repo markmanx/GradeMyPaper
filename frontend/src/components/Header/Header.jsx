@@ -50,8 +50,6 @@ export const Header = () => {
     loginWithRedirect({});
   };
 
-  const onSignOut = () => {};
-
   return (
     <ThemeProviders type="dark">
       <Wrapper>
@@ -78,9 +76,9 @@ export const Header = () => {
                   </Button>
                 )}
                 <Button
-                  variant={isAuthenticated ? 'default' : 'contained'}
+                  variant={isAuthenticated ? 'text' : 'contained'}
                   size="small"
-                  onClick={isAuthenticated ? onSignOut : onSignIn}
+                  onClick={isAuthenticated ? logout : onSignIn}
                 >
                   {isAuthenticated ? 'Sign out' : 'Sign in'}
                 </Button>
