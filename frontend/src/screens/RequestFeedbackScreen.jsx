@@ -22,20 +22,24 @@ export const RequestFeedbackScreen = () => {
   const [cardWidth, setCardWidth] = React.useState(500);
   const cardRef = React.useRef(null);
 
-  React.useEffect(() => {
-    const onWindowResize = () => {
-      if (cardRef.current) {
-        setCardWidth(cardRef.current.clientWidth - 80);
-      } else {
-        setCardWidth(500);
-      }
-    };
+  const onWindowResize = () => {
+    if (cardRef.current) {
+      setCardWidth(cardRef.current.clientWidth - 80);
+    } else {
+      setCardWidth(500);
+    }
+  };
 
+  React.useEffect(() => {
     window.addEventListener('resize', onWindowResize);
     return () => {
       window.removeEventListener('resize', onWindowResize);
     };
   }, []);
+
+  React.useEffect(() => {
+    if (cardRef.current) onWindowResize();
+  }, [cardRef]);
 
   const {
     match: { params }
