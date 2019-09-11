@@ -6,10 +6,10 @@ import {
   HomeScreen,
   Dashboard,
   RequestFeedbackScreen
-} from '../screens';
-import { ProtectedRoute } from '../components';
+} from './screens';
+import { ProtectedRoute } from './components';
 
-export const RouteMatcher = () => {
+export const Routes = () => {
   return (
     <Switch>
       <Route path="/" exact component={HomeScreen} />

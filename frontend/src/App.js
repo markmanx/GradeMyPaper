@@ -4,9 +4,9 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProviders } from './context/ThemeProviders';
 import { Auth0Provider } from './context/auth0';
 import { Provider as ApolloProvider } from './helpers/apolloClient';
-import { RouteMatcher } from './helpers/routes';
 import { GlobalStyle } from './helpers/globalStyles';
 import { Header } from './components';
+import { Routes } from './Routes';
 
 function App() {
   return (
@@ -21,7 +21,7 @@ function App() {
           <GlobalStyle />
           <Router>
             <Header />
-            <RouteMatcher />
+            <Routes />
           </Router>
         </ThemeProviders>
       </Auth0Provider>
