@@ -12,6 +12,7 @@ const jwt = require('jsonwebtoken');
 const jwksClient = require('jwks-rsa');
 const bodyParser = require('body-parser');
 const request = require('request-promise-native');
+const { getSignedUrl } = require('./helpers/fileUpload');
 
 const {
   validateStripeEvent,
@@ -176,6 +177,11 @@ app.post(
     }
   }
 );
+
+app.get('/generate-presigned-upload-url', async (req, res) => {
+  const signedUrl = await getSignedUrl('hello');
+  res.send(signedUrl);
+});
 
 const port = process.env.APOLLO_SERVER_PORT;
 
