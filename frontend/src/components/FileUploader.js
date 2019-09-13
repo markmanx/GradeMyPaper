@@ -52,7 +52,13 @@ const Wrapper = styled.div`
   }
 `;
 
-export const FileUploader = ({ width }) => {
+export const FileUploader = ({ width, onFirstFileUploaded }) => {
+  uppy.on('complete', result => {
+    if (result.successful) {
+      onFirstFileUploaded();
+    }
+  });
+
   return (
     <Wrapper>
       <Dashboard
@@ -61,6 +67,7 @@ export const FileUploader = ({ width }) => {
         inline
         width={width}
         key={width}
+        showLinkToFileUploadResult={false}
       />
     </Wrapper>
   );
