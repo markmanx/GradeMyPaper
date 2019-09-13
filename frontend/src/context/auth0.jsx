@@ -55,6 +55,7 @@ export const Auth0Provider = ({
     } else {
       localStorage.removeItem('access_token');
     }
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [isAuthenticated]);
 
   const loginWithPopup = async (params = {}) => {

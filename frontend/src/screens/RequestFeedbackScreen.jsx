@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components/macro';
 import { Card } from '@material-ui/core';
 
-import { useRouter } from '../hooks/useRouter';
 import {
   Section,
   SlantedBackground,
@@ -18,7 +17,7 @@ const Navigation = styled.div`
 `;
 
 export const RequestFeedbackScreen = () => {
-  const [step, setStep] = React.useState(0);
+  const [step] = React.useState(0);
   const [cardWidth, setCardWidth] = React.useState(500);
   const cardRef = React.useRef(null);
 
@@ -41,11 +40,11 @@ export const RequestFeedbackScreen = () => {
     if (cardRef.current) onWindowResize();
   }, [cardRef]);
 
-  const {
-    match: { params }
-  } = useRouter();
+  // const {
+  //   match: { params }
+  // } = useRouter();
 
-  const { paperId } = params;
+  // const { paperId } = params;
 
   return (
     <Section bgChildren={<SlantedBackground slantBottom />}>

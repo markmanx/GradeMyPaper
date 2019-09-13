@@ -15,29 +15,32 @@ const uppy = Uppy({
   autoProceed: true
 });
 
-uppy.use(Webcam, {
-  modes: ['picture'],
-  facingMode: 'environment'
-});
-
-uppy.use(AwsS3, {
-  getUploadParameters: file => {
-    return fetch(`http://localhost:4000/generate-presigned-upload-url`, {
-      method: 'get'
-    })
-      .then(response => {
-        console.log(response.json());
-        return response.json();
-      })
-      .then(data => {
-        return {
-          method: data.method,
-          url: data.url,
-          fields: data.fields
-        };
-      });
-  }
-});
+uppy
+  .use(Webcam, {
+    modes: ['picture'],
+    facingMode: 'environment'
+  })
+  .use(AwsS3, {
+    getUploadParameters: file => {
+      return fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/generate-presigned-upload-url`,
+        {
+          method: 'get'
+        }
+      )
+        .then(response => {
+          console.log(response.json());
+          return response.json();
+        })
+        .then(data => {
+          return {
+            method: data.method,
+            url: data.url,
+            fields: data.fields
+          };
+        });
+    }
+  });
 
 const Wrapper = styled.div`
   display: flex;
