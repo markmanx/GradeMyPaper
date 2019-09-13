@@ -10,7 +10,8 @@ import {
   Padder,
   FileUploader,
   Button,
-  Text
+  Text,
+  CheckoutButton
 } from '../components';
 
 const STEP_CONTENT = [
@@ -18,6 +19,10 @@ const STEP_CONTENT = [
     title: 'Upload your answer sheet',
     body:
       'Upload files or take photos of your answersheet straight from your device.  Please make sure that your answers are readable.'
+  },
+  {
+    title: 'Make payment',
+    body: "We'll have your paper marked in 48 hours."
   }
 ];
 
@@ -28,7 +33,7 @@ const Navigation = styled.div`
 `;
 
 export const RequestFeedbackScreen = ({ match }) => {
-  const [step] = React.useState(0);
+  const [step, setStep] = React.useState(0);
   const [firstFileUploaded, setFirstFileUploaded] = React.useState(false);
   const [cardWidth, setCardWidth] = React.useState(500);
   const cardRef = React.useRef(null);
@@ -63,6 +68,10 @@ export const RequestFeedbackScreen = ({ match }) => {
     setFirstFileUploaded(true);
   };
 
+  const onNext = () => {
+    setStep(step + 1);
+  };
+
   return (
     <Section bgChildren={<SlantedBackground slantBottom />}>
       <Padder paddingTop={10}>
@@ -77,19 +86,14 @@ export const RequestFeedbackScreen = ({ match }) => {
             <>
               <Padder paddingVertical={2} paddingHorizontal={2}>
                 <Text variant="h3" bold>
-                  {paper.title}
+                  {`${step + 1}. ${title}`}
                 </Text>
                 <Text variant="body2" textColor="hint">
-                  {paper.id}
+                  {paper.title}
                 </Text>
               </Padder>
               <Divider></Divider>
               <Padder paddingTop={2} paddingHorizontal={2}>
-                <Padder paddingBottom={0.5}>
-                  <Text variant="h4" bold>
-                    {title}
-                  </Text>
-                </Padder>
                 <Grid container>
                   <Grid item md={7}>
                     <Text>{body}</Text>
@@ -103,10 +107,17 @@ export const RequestFeedbackScreen = ({ match }) => {
                     onFirstFileUploaded={onFirstFileUploaded}
                   />
                 )}
+
+                {step === 1 && <CheckoutButton />}
+
                 <Padder paddingTop={1}>
                   <Navigation>
                     {step > 0 && <Button variant="text">Previous</Button>}
-                    <Button variant="contained" disabled={!firstFileUploaded}>
+                    <Button
+                      variant="contained"
+                      disabled={!firstFileUploaded}
+                      onClick={onNext}
+                    >
                       Next
                     </Button>
                   </Navigation>
