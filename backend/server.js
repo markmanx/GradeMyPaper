@@ -180,7 +180,11 @@ app.post(
 
 app.get('/generate-presigned-upload-url', async (req, res) => {
   const signedUrl = await getSignedUrl('hello');
-  res.send(signedUrl);
+
+  res.header({
+    'access-control-allow-origin': '*'
+  });
+  res.json({ method: 'PUT', url: signedUrl, fields: {}, headers: {} });
 });
 
 const port = process.env.APOLLO_SERVER_PORT;

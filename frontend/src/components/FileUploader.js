@@ -3,6 +3,8 @@ import styled from 'styled-components/macro';
 import Uppy from '@uppy/core';
 import Webcam from '@uppy/webcam';
 import { Dashboard } from '@uppy/react';
+import AwsS3 from '@uppy/aws-s3';
+import fetch from 'unfetch';
 
 import '@uppy/core/dist/style.css';
 import '@uppy/dashboard/dist/style.css';
@@ -18,6 +20,25 @@ uppy.use(Webcam, {
   facingMode: 'environment'
 });
 
+uppy.use(AwsS3, {
+  getUploadParameters: file => {
+    return fetch(`http://localhost:4000/generate-presigned-upload-url`, {
+      method: 'get'
+    })
+      .then(response => {
+        console.log(response.json());
+        return response.json();
+      })
+      .then(data => {
+        return {
+          method: data.method,
+          url: data.url,
+          fields: data.fields
+        };
+      });
+  }
+});
+
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -29,8 +50,6 @@ const Wrapper = styled.div`
 `;
 
 export const FileUploader = ({ width }) => {
-  console.log(width);
-
   return (
     <Wrapper>
       <Dashboard

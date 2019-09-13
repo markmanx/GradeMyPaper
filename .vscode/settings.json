@@ -1,4 +1,4 @@
 {
   "eslint.enable": true,
-  "eslint.workingDirectories": ["backend"]
+  "eslint.workingDirectories": ["backend", "frontend"]
 }
