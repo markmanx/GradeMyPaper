@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import { Card, Divider, Grid } from '@material-ui/core';
 
-import { getPaperById } from '../helpers/paperHelpers';
+import { useRequestQuery } from '../gql/queries/requestQuery';
 
 import {
   Section,
@@ -33,6 +33,7 @@ const Navigation = styled.div`
 `;
 
 export const RequestFeedbackScreen = ({ match }) => {
+  const { data, loading, error } = useRequestQuery(match.params.requestId);
   const [step, setStep] = React.useState(0);
   const [firstFileUploaded, setFirstFileUploaded] = React.useState(false);
   const [cardWidth, setCardWidth] = React.useState(500);
@@ -48,6 +49,7 @@ export const RequestFeedbackScreen = ({ match }) => {
 
   React.useEffect(() => {
     window.addEventListener('resize', onWindowResize);
+
     return () => {
       window.removeEventListener('resize', onWindowResize);
     };
@@ -55,13 +57,14 @@ export const RequestFeedbackScreen = ({ match }) => {
 
   React.useEffect(() => {
     if (cardRef.current) onWindowResize();
-  }, [cardRef]);
+  }, [cardRef, data.request]);
 
-  const {
-    params: { paperId }
-  } = match;
+  if (!match.params.requestId || loading || error || !data) {
+    return null;
+  }
 
-  const paper = getPaperById(paperId);
+  const { paper } = data.request;
+
   const { title, body } = STEP_CONTENT[step];
 
   const onFirstFileUploaded = () => {

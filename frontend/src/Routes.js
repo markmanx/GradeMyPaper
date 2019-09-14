@@ -15,7 +15,7 @@ export const Routes = () => {
       <Route path="/" exact component={HomeScreen} />
       <Route path="/logout" exact component={LogoutScreen} />
       <Route
-        path="/request-feedback/:paperId"
+        path="/request-feedback/:requestId"
         exact
         component={RequestFeedbackScreen}
       />

@@ -14,7 +14,7 @@ type Query {
   me: User
   papers: [Paper!]!
   protectedQuery: String!
-  request: Request
+  request(requestId: String!): Request
 }
 
 type Mutation {
