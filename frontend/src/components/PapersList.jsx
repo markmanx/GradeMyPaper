@@ -14,7 +14,7 @@ export const PapersList = () => {
   return (
     <List>
       {data.papers.map(paper => (
-        <PaperListItem paper={paper} />
+        <PaperListItem paper={paper} key={paper.id} />
       ))}
     </List>
   );
