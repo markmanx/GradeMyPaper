@@ -62,7 +62,6 @@ const Mutation = {
       .createRequest({
         paper: { connect: { id } }
       })
-      .$fragment(paperFragment)
       .$fragment(
         `
         fragment RequestWithPaper on Request {
