@@ -5,6 +5,7 @@ const {
 } = require('../helpers/stripe');
 const { to } = require('../helpers/utils');
 const { config } = require('../config');
+const { paperFragment } = require('../fragments/paperFragment');
 
 const Mutation = {
   createCheckoutSession: async (parent, args, ctx) => {
@@ -57,18 +58,21 @@ const Mutation = {
   initiateRequest: async (parent, args, { user, prisma }) => {
     const { id } = args;
 
-    const request = await prisma.createRequest({
-      paper: { connect: { id } }
-    }).$fragment(`
+    const request = await prisma
+      .createRequest({
+        paper: { connect: { id } }
+      })
+      .$fragment(paperFragment)
+      .$fragment(
+        `
         fragment RequestWithPaper on Request {
           id
           paper {
-            id
-            title
+            ${paperFragment}
           }
         }
-      `);
-    console.log(request);
+      `
+      );
 
     return request;
   }
