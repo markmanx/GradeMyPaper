@@ -54,9 +54,23 @@ const Mutation = {
 
     return { sessionId: session.id };
   },
-  initiateRequest: (parent, args, ctx) => {
-    // paperExists()
-    // Paper paid?
+  initiateRequest: async (parent, args, { user, prisma }) => {
+    const { id } = args;
+
+    const request = await prisma.createRequest({
+      paper: { connect: { id } }
+    }).$fragment(`
+        fragment RequestWithPaper on Request {
+          id
+          paper {
+            id
+            title
+          }
+        }
+      `);
+    console.log(request);
+
+    return request;
   }
 };
 

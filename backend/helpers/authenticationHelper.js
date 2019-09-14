@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const jwksClient = require('jwks-rsa');
 const request = require('request-promise-native');
+const { AuthenticationError } = require('apollo-server-express');
 
 const authenticationMiddleware = async (req, prisma) => {
   // get the user token from the headers
@@ -15,16 +16,17 @@ const authenticationMiddleware = async (req, prisma) => {
   if (decoded !== null) {
     const kid = decoded.header.kid;
 
-    let signingKey;
+    let verified;
 
     try {
-      signingKey = await new Promise((resolve, reject) => {
+      const signingKey = await new Promise((resolve, reject) => {
         const jwks = jwksClient({
           cache: true,
           rateLimit: true,
           jwksRequestsPerMinute: 10, // Default value
           jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`
         });
+
         jwks.getSigningKey(kid, (err, key) => {
           if (err || !key) {
             reject();
@@ -33,20 +35,19 @@ const authenticationMiddleware = async (req, prisma) => {
           resolve(key.publicKey || key.rsaPublicKey);
         });
       });
+
+      verified = await new Promise((resolve, reject) => {
+        jwt.verify(token, signingKey, (err, decoded) => {
+          if (err || !decoded) {
+            reject();
+            return;
+          }
+          resolve(decoded);
+        });
+      });
     } catch (e) {
       throw new AuthenticationError('Not a valid token');
-      return;
     }
-
-    const verified = await new Promise((resolve, reject) => {
-      jwt.verify(token, signingKey, (err, decoded) => {
-        if (err || !decoded) {
-          reject();
-          return;
-        }
-        resolve(decoded);
-      });
-    });
 
     const { sub } = verified;
 

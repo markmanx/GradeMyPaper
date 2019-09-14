@@ -27,6 +27,6 @@ type Paper {
 
 type Request {
   id: ID! @id
-  paper: Paper! @relation(link: INLINE)
+  paper: Paper! @relation(link: TABLE)
   paymentRef: String
 }

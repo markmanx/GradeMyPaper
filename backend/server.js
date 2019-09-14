@@ -34,7 +34,8 @@ const permissions = shield({
     protectedQuery: isAuthenticated
   },
   Mutation: {
-    createCheckoutSession: isAuthenticated
+    createCheckoutSession: isAuthenticated,
+    initiateRequest: isAuthenticated
   }
 });
 

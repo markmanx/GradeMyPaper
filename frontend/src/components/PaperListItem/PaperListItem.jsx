@@ -8,6 +8,7 @@ import {
   ListItemSecondaryAction
 } from '@material-ui/core';
 
+import { useInitiateRequestMutation } from '../../gql';
 import { Button } from '../../components';
 import aqaLogoImg from './assets/aqa-board.png';
 import { useRouter } from '../../hooks/useRouter.js';
@@ -38,9 +39,15 @@ const AqaLogo = styled.img`
 
 export const PaperListItem = ({ paper }) => {
   const { history } = useRouter();
+  const [initiateRequestMutation] = useInitiateRequestMutation();
 
-  const onGetFeedback = () => {
-    history.push(`/request-feedback/${paper.id}`);
+  const onGetFeedback = async () => {
+    const response = initiateRequestMutation({
+      variables: { id: paper.id }
+    });
+    // console.log(response);
+
+    // history.push(`/request-feedback/${paper.id}`);
   };
 
   return (

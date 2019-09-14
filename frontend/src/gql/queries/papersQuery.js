@@ -1,18 +1,14 @@
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import { paperFragment } from '../../gql';
 
 const papersQuery = gql`
   query {
     papers {
-      id
-      paperId
-      board
-      title
-      qualification
-      questionsUrl
-      markSchemeUrl
+      ...Paper
     }
   }
+  ${paperFragment}
 `;
 
 export const usePapersQuery = () => {
