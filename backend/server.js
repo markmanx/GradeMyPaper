@@ -7,11 +7,10 @@ const {
 const { importSchema } = require('graphql-import');
 const { applyMiddleware } = require('graphql-middleware');
 const { prisma } = require('./prisma/generated');
-const { rule, shield, and, or, not } = require('graphql-shield');
-const jwt = require('jsonwebtoken');
-const jwksClient = require('jwks-rsa');
+const { rule, shield } = require('graphql-shield');
 const bodyParser = require('body-parser');
-const request = require('request-promise-native');
+
+const { authenticationMiddleware } = require('./helpers/authenticationHelper');
 const { getSignedUrl } = require('./helpers/fileUpload');
 
 const {
@@ -45,75 +44,7 @@ const schemaWithMiddleware = applyMiddleware(schema, permissions);
 const server = new ApolloServer({
   schema: schemaWithMiddleware,
   context: async ({ req }) => {
-    // get the user token from the headers
-    const token =
-      (req.headers.authorization &&
-        req.headers.authorization.replace('Bearer ', '')) ||
-      '';
-
-    // try to retrieve a user with the token
-    const decoded = jwt.decode(token, { complete: true });
-
-    if (decoded !== null) {
-      const kid = decoded.header.kid;
-
-      let signingKey;
-
-      try {
-        signingKey = await new Promise((resolve, reject) => {
-          const jwks = jwksClient({
-            cache: true,
-            rateLimit: true,
-            jwksRequestsPerMinute: 10, // Default value
-            jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`
-          });
-          jwks.getSigningKey(kid, (err, key) => {
-            if (err || !key) {
-              reject();
-              return;
-            }
-            resolve(key.publicKey || key.rsaPublicKey);
-          });
-        });
-      } catch (e) {
-        throw new AuthenticationError('Not a valid token');
-        return;
-      }
-
-      const verified = await new Promise((resolve, reject) => {
-        jwt.verify(token, signingKey, (err, decoded) => {
-          if (err || !decoded) {
-            reject();
-            return;
-          }
-          resolve(decoded);
-        });
-      });
-
-      const { sub } = verified;
-
-      let user = await prisma.user({
-        auth0Id: sub
-      });
-
-      if (!user) {
-        const userInfo = await new request.get({
-          url: `https://${process.env.AUTH0_DOMAIN}/userinfo`,
-          json: true,
-          headers: { Authorization: req.headers.authorization }
-        });
-
-        user = await prisma.createUser({
-          auth0Id: userInfo.sub,
-          email: userInfo.email,
-          credits: 0
-        });
-      }
-
-      return { user, prisma };
-    }
-
-    return { user: null, prisma };
+    return authenticationMiddleware(req, prisma);
   }
 });
 

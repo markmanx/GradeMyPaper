@@ -6,14 +6,15 @@ type User {
   credits: Int!
 }
 
-type Query {
-  me: User
-  protectedQuery: String!
-  request: Request
-}
-
 type CheckoutSessionStatus {
   sessionId: String
+}
+
+type Query {
+  me: User
+  papers: [Paper!]!
+  protectedQuery: String!
+  request: Request
 }
 
 type Mutation {
