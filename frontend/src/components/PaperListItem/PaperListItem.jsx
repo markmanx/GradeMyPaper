@@ -42,12 +42,22 @@ export const PaperListItem = ({ paper }) => {
   const [initiateRequestMutation] = useInitiateRequestMutation();
 
   const onGetFeedback = async () => {
-    const response = initiateRequestMutation({
+    const initiatedRequest = await initiateRequestMutation({
       variables: { id: paper.id }
     });
-    // console.log(response);
 
-    // history.push(`/request-feedback/${paper.id}`);
+    if (
+      initiatedRequest.loading ||
+      initiatedRequest.error ||
+      !initiatedRequest ||
+      !initiatedRequest.data
+    ) {
+      return null;
+    }
+
+    history.push(
+      `/request-feedback/${initiatedRequest.data.initiateRequest.id}`
+    );
   };
 
   return (
