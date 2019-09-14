@@ -6,7 +6,7 @@ const {
 } = require('apollo-server-express');
 const { importSchema } = require('graphql-import');
 const { applyMiddleware } = require('graphql-middleware');
-const { prisma } = require('./prisma/generated/prisma');
+const { prisma } = require('./prisma/generated');
 const { rule, shield, and, or, not } = require('graphql-shield');
 const jwt = require('jsonwebtoken');
 const jwksClient = require('jwks-rsa');

@@ -53,6 +53,10 @@ const Mutation = {
     }
 
     return { sessionId: session.id };
+  },
+  initiateRequest: (parent, args, ctx) => {
+    // paperExists()
+    // Paper paid?
   }
 };
 

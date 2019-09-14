@@ -4,8 +4,13 @@ secret: ${env:PRISMA_SECRET}
 
 generate:
   - generator: javascript-client
-    output: ./generated/prisma
+    output: ./generated
+  - generator: graphql-schema
+    output: ./generated/prisma.graphql
 
 hooks:
   post-deploy:
     - prisma generate
+
+seed:
+  run: node ./seed/index.js

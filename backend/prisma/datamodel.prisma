@@ -5,3 +5,28 @@ type User {
   auth0Id: String! @unique
   credits: Int!
 }
+
+enum Qualification {
+  ALEVEL
+  ASLEVEL
+}
+
+enum Board {
+  AQA
+}
+
+type Paper {
+  id: ID! @id
+  paperId: String! @unique
+  board: Board!
+  title: String!
+  qualification: Qualification!
+  questionsUrl: String!
+  markSchemeUrl: String!
+}
+
+type Request {
+  id: ID! @id
+  paper: Paper! @relation(link: INLINE)
+  paymentRef: String
+}
