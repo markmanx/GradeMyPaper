@@ -113,7 +113,7 @@ export const RequestFeedbackScreen = ({ match }) => {
                   />
                 )}
 
-                {step === 1 && <CheckoutButton />}
+                {step === 1 && <CheckoutButton requestId={requestId} />}
 
                 <Padder paddingTop={1}>
                   <Navigation>

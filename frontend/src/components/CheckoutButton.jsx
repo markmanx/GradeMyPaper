@@ -1,14 +1,13 @@
 import React from 'react';
 
-import { useMutation } from '@apollo/react-hooks';
 import { Button } from '../components';
-import { createCheckoutSessionMutation } from '../gql';
+import { useCreateCheckoutSessionMutation } from '../gql';
 
-export const CheckoutButton = () => {
-  const [mutation] = useMutation(createCheckoutSessionMutation);
+export const CheckoutButton = ({ requestId }) => {
+  const [mutation, { loading, error }] = useCreateCheckoutSessionMutation();
 
   const onCheckout = async () => {
-    const { data } = await mutation();
+    const { data } = await mutation({ variables: { requestId } });
 
     if (!data || !data.createCheckoutSession) return;
 
