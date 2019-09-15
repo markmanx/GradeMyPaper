@@ -2,7 +2,7 @@ const {
   createStripeSession,
   getSku,
   createCustomer
-} = require('../helpers/stripe');
+} = require('../helpers/stripeHelper');
 const { to } = require('../helpers/utils');
 const { config } = require('../config');
 const {
@@ -11,8 +11,8 @@ const {
 const { getSignedUrl, getFileCount } = require('../helpers/fileUpload');
 
 const Mutation = {
-  createCheckoutSession: async (parent, args, ctx) => {
-    const { user } = ctx;
+  createCheckoutSession: async (parent, args, { user, prisma }) => {
+    const { requestId } = args;
 
     let stripeCustomerId;
 
@@ -29,7 +29,7 @@ const Mutation = {
       stripeCustomerId = newCustomer.id;
 
       const [updatedUserErr, updatedUser] = await to(
-        ctx.prisma.updateUser({
+        prisma.updateUser({
           data: { stripeCustomerId },
           where: { id: ctx.user.id }
         })
@@ -49,7 +49,7 @@ const Mutation = {
     }
 
     const [sessionErr, session] = await to(
-      createStripeSession(stripeCustomerId, sku)
+      createStripeSession(stripeCustomerId, sku, requestId)
     );
 
     if (sessionErr || !session) {

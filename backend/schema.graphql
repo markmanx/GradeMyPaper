@@ -18,7 +18,7 @@ type Query {
 }
 
 type Mutation {
-  createCheckoutSession: CheckoutSessionStatus!
   initiateRequest(id: String!): Request!
+  createCheckoutSession(requestId: String!): CheckoutSessionStatus!
   generatePresignedUrl(requestId: String!): String
 }

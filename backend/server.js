@@ -11,11 +11,12 @@ const { rule, shield } = require('graphql-shield');
 const bodyParser = require('body-parser');
 
 const { authenticationMiddleware } = require('./helpers/authenticationHelper');
-
 const {
   validateStripeEvent,
-  onPaymentIntentSucceeded
-} = require('./helpers/stripe');
+  getUserByStripeId,
+  incrementUserCredits,
+  markRequestAsPaid
+} = require('./helpers/stripeHelper');
 const { resolvers } = require('./resolvers');
 const { to } = require('./helpers/utils');
 
@@ -70,35 +71,40 @@ app.post(
     switch (type) {
       case 'payment_intent.succeeded':
         const {
-          object: { customer }
-        } = data;
+          id,
+          customer,
+          metadata: { requestId }
+        } = data.object;
 
-        if (!customer) {
-          throw new Error('Could not retrieve customer');
+        if (requestId) {
+          const [updateRequestErr] = await to(
+            markRequestAsPaid(prisma, {
+              requestId,
+              stripeSessionId: id
+            })
+          );
+
+          console.log(updateRequestErr);
+
+          if (!updateRequestErr) {
+            res.status(200).end();
+            return;
+          }
         }
 
-        const [userMatchesErr, userMatches] = await to(
-          prisma.users({ where: { stripeCustomerId: customer } })
-        );
-
-        if (userMatchesErr || !userMatches.length) {
-          throw new Error('Could not retrieve user');
-        }
-
-        const user = userMatches[0];
-
-        const [updatedUserErr, updatedUser] = await to(
-          prisma.updateUser({
-            data: { credits: user.credits + 1 },
-            where: { id: user.id }
+        const [userErr, user] = await to(
+          getUserByStripeId(prisma, {
+            stripeCustomerId: customer
           })
         );
 
-        if (updatedUserErr || !updatedUser) {
-          throw new Error('Could not update user credits');
+        if (userErr) {
+          res.status(500).end();
+          return;
         }
 
-        return res.status(200).end();
+        await incrementUserCredits(prisma, { userId: user.id });
+
         break;
       // case 'payment_intent.failed':
       //   return res.status(200).end();
