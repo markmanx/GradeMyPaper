@@ -1,4 +1,5 @@
 const { validateRequest } = require('./stripeHelper');
+const errorMessages = require('../../messages/errorMessages');
 
 const REQUEST = {
   id: '123',
@@ -24,7 +25,7 @@ describe('Validates feedback request before payment is made', () => {
     const validated = validateRequest(prismaMock, { requestId: '123' });
 
     // Assert
-    return expect(validated).resolves.toMatchObject({ paymentAllowed: true });
+    return expect(validated).resolves.toMatchObject(REQUEST);
   });
 
   test('fails if payment attempted on a request where payment has already been taken', () => {
@@ -44,7 +45,7 @@ describe('Validates feedback request before payment is made', () => {
     const validated = validateRequest(prismaMock, { requestId: '123' });
 
     // Assert
-    return expect(validated).resolves.toMatchObject({ paymentAllowed: false });
+    return expect(validated).rejects.toBe(errorMessages.PAYMENT_ALREADY_MADE);
   });
 
   test('fails if payment attempted on a request where no answer pages have been uploaded', () => {
@@ -64,6 +65,8 @@ describe('Validates feedback request before payment is made', () => {
     const validated = validateRequest(prismaMock, { requestId: '123' });
 
     // Assert
-    return expect(validated).resolves.toMatchObject({ paymentAllowed: false });
+    return expect(validated).rejects.toBe(
+      errorMessages.NO_ANSWERSHEETS_UPLOADED
+    );
   });
 });

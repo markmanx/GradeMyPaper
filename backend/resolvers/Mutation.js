@@ -15,14 +15,14 @@ const Mutation = {
   createCheckoutSession: async (parent, args, { user, prisma }) => {
     const { requestId } = args;
 
-    const [validationErr, validation] = await to(
+    const [validationErr, validRequest] = await to(
       validateRequest(prisma, {
         requestId
       })
     );
 
-    if (validationErr || !validation.paymentAllowed) {
-      throw new Error('Request is invalid for payment');
+    if (validationErr) {
+      throw new Error(validationErr);
     }
 
     let stripeCustomerId;

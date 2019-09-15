@@ -1,5 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_API_SECRET);
 const { to } = require('../utils');
+const errorMessages = require('../../messages/errorMessages');
 
 const getSku = sku => {
   return new Promise((resolve, reject) => {
@@ -14,7 +15,7 @@ const getSku = sku => {
 };
 
 const validateRequest = (prisma, { requestId }) => {
-  return new Promise(async resolve => {
+  return new Promise(async (resolve, reject) => {
     const request = await prisma.request({ id: requestId }).$fragment(`
       fragment RequestValidationParts on Request {
         id
@@ -28,19 +29,21 @@ const validateRequest = (prisma, { requestId }) => {
       }
     `);
 
-    const exists = Boolean(request);
-    const { pageUploads, paymentRef, paper } = request;
+    const { pageUploads, paymentRef } = request;
 
-    resolve({
-      exists,
-      paymentAllowed: Boolean(
-        exists &&
-          !paymentRef &&
-          pageUploads &&
-          pageUploads.length > 0 &&
-          paper.id
-      )
-    });
+    if (!request) {
+      reject(errorMessages.REQUEST_NOT_EXIST);
+    }
+
+    if (!pageUploads.length) {
+      reject(errorMessages.NO_ANSWERSHEETS_UPLOADED);
+    }
+
+    if (paymentRef) {
+      reject(errorMessages.PAYMENT_ALREADY_MADE);
+    }
+
+    resolve(request);
   });
 };
 
