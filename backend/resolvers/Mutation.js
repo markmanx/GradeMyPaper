@@ -5,7 +5,10 @@ const {
 } = require('../helpers/stripe');
 const { to } = require('../helpers/utils');
 const { config } = require('../config');
-const { paperFragment } = require('../fragments/paperFragment');
+const {
+  requestWithPaperFragment
+} = require('../fragments/requestWithPaperFragment');
+const { getSignedUrl, getFileCount } = require('../helpers/fileUpload');
 
 const Mutation = {
   createCheckoutSession: async (parent, args, ctx) => {
@@ -62,18 +65,25 @@ const Mutation = {
       .createRequest({
         paper: { connect: { id } }
       })
-      .$fragment(
-        `
-        fragment RequestWithPaper on Request {
-          id
-          paper {
-            ${paperFragment}
-          }
-        }
-      `
-      );
+      .$fragment(requestWithPaperFragment);
 
     return request;
+  },
+  generatePresignedUrl: async (parent, args, { user, prisma }) => {
+    const { requestId } = args;
+
+    const request = await prisma.request({ id: requestId });
+
+    const fileCount = await getFileCount(requestId);
+
+    const pageUpload = await prisma.createPageUpload({
+      order: fileCount,
+      request: { connect: { id: request.id } }
+    });
+
+    const url = await getSignedUrl(request.id, pageUpload.id);
+
+    return url;
   }
 };
 

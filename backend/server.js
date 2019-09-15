@@ -11,7 +11,6 @@ const { rule, shield } = require('graphql-shield');
 const bodyParser = require('body-parser');
 
 const { authenticationMiddleware } = require('./helpers/authenticationHelper');
-const { getSignedUrl } = require('./helpers/fileUpload');
 
 const {
   validateStripeEvent,
@@ -109,15 +108,6 @@ app.post(
     }
   }
 );
-
-app.get('/generate-presigned-upload-url', async (req, res) => {
-  const signedUrl = await getSignedUrl('hello');
-
-  res.header({
-    'access-control-allow-origin': '*'
-  });
-  res.json({ method: 'PUT', url: signedUrl, fields: {}, headers: {} });
-});
 
 const port = process.env.APOLLO_SERVER_PORT;
 

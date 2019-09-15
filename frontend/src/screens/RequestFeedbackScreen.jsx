@@ -33,7 +33,8 @@ const Navigation = styled.div`
 `;
 
 export const RequestFeedbackScreen = ({ match }) => {
-  const { data, loading, error } = useRequestQuery(match.params.requestId);
+  const { requestId } = match.params;
+  const { data, loading, error } = useRequestQuery(requestId);
   const [step, setStep] = React.useState(0);
   const [firstFileUploaded, setFirstFileUploaded] = React.useState(false);
   const [cardWidth, setCardWidth] = React.useState(500);
@@ -108,6 +109,7 @@ export const RequestFeedbackScreen = ({ match }) => {
                   <FileUploader
                     width={cardWidth}
                     onFirstFileUploaded={onFirstFileUploaded}
+                    requestId={requestId}
                   />
                 )}
 

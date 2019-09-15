@@ -1,4 +1,6 @@
-const { paperFragment } = require('../fragments/paperFragment');
+const {
+  requestWithPaperFragment
+} = require('../fragments/requestWIthPaperFragment');
 
 const Query = {
   me: (parent, args, ctx) => {
@@ -13,14 +15,9 @@ const Query = {
     return 'This is protected data';
   },
   request: (parent, { requestId }, { prisma }) => {
-    return prisma.request({ id: requestId }).$fragment(`
-      fragment RequestWithPaper on Request{
-        id
-        paper {
-          ${paperFragment}
-        }
-      }
-    `);
+    return prisma
+      .request({ id: requestId })
+      .$fragment(requestWithPaperFragment);
   }
 };
 

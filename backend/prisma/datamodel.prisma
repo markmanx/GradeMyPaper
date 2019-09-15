@@ -25,8 +25,15 @@ type Paper {
   markSchemeUrl: String!
 }
 
+type PageUpload {
+  id: ID! @id
+  order: Int!
+  request: Request! @relation(link: INLINE)
+}
+
 type Request {
   id: ID! @id
-  paper: Paper! @relation(link: TABLE)
   paymentRef: String
+  paper: Paper! @relation(link: TABLE)
+  pageUploads: [PageUpload!]!
 }

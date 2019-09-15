@@ -6,14 +6,32 @@ const s3 = new S3({
 });
 
 const params = {
-  Bucket: 'grademypaper-s3-bucket'
+  Bucket: 'grademypaper-s3-bucket',
+  Expires: 120
 };
 
-const getSignedUrl = key => {
+const uploadsDir = 'uploads';
+
+const getFileCount = requestId => {
+  return new Promise((resolve, reject) => {
+    s3.listObjectsV2(
+      { Bucket: params.Bucket, Prefix: `${uploadsDir}/${requestId}` },
+      (err, data) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(data.KeyCount);
+      }
+    );
+  });
+};
+
+const getSignedUrl = (requestId, key) => {
   return new Promise((resolve, reject) => {
     s3.getSignedUrl(
       'putObject',
-      { ...params, Key: `uploads/${key}`, Expires: 3600 },
+      { ...params, Key: `${uploadsDir}/${requestId}/${key}` },
       (err, url) => {
         if (err) {
           reject(err);
@@ -27,5 +45,6 @@ const getSignedUrl = key => {
 };
 
 module.exports = {
-  getSignedUrl
+  getSignedUrl,
+  getFileCount
 };

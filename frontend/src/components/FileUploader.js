@@ -4,43 +4,10 @@ import Uppy from '@uppy/core';
 import Webcam from '@uppy/webcam';
 import { Dashboard } from '@uppy/react';
 import AwsS3 from '@uppy/aws-s3';
-import fetch from 'unfetch';
+import { useGeneratePresignedUrlMutation } from '../gql';
 
 import '@uppy/core/dist/style.css';
 import '@uppy/dashboard/dist/style.css';
-
-const uppy = Uppy({
-  meta: { type: 'avatar' },
-  restrictions: { maxNumberOfFiles: 10 },
-  autoProceed: true
-});
-
-uppy
-  .use(Webcam, {
-    modes: ['picture'],
-    facingMode: 'environment'
-  })
-  .use(AwsS3, {
-    getUploadParameters: file => {
-      return fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/generate-presigned-upload-url`,
-        {
-          method: 'get'
-        }
-      )
-        .then(response => {
-          console.log(response.json());
-          return response.json();
-        })
-        .then(data => {
-          return {
-            method: data.method,
-            url: data.url,
-            fields: data.fields
-          };
-        });
-    }
-  });
 
 const Wrapper = styled.div`
   display: flex;
@@ -52,12 +19,48 @@ const Wrapper = styled.div`
   }
 `;
 
-export const FileUploader = ({ width, onFirstFileUploaded }) => {
-  uppy.on('complete', result => {
-    if (result.successful) {
-      onFirstFileUploaded();
-    }
-  });
+export const FileUploader = ({ width, onFirstFileUploaded, requestId }) => {
+  const [uppy, setUppy] = React.useState(null);
+  const [mutation, { loading, error }] = useGeneratePresignedUrlMutation();
+
+  React.useEffect(() => {
+    const uppy = Uppy({
+      meta: { type: 'avatar' },
+      restrictions: { maxNumberOfFiles: 10 },
+      autoProceed: true
+    });
+
+    uppy
+      .use(Webcam, {
+        modes: ['picture'],
+        facingMode: 'environment'
+      })
+      .use(AwsS3, {
+        getUploadParameters: async file => {
+          const response = await mutation({ variables: { requestId } });
+
+          if (response.data) {
+            return {
+              method: 'PUT',
+              url: response.data.generatePresignedUrl,
+              fields: {},
+              headers: {}
+            };
+          }
+        }
+      })
+      .on('complete', result => {
+        if (result.successful) {
+          onFirstFileUploaded();
+        }
+      });
+
+    setUppy(uppy);
+  }, []);
+
+  if (!uppy) {
+    return null;
+  }
 
   return (
     <Wrapper>
