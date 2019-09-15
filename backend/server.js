@@ -16,7 +16,7 @@ const {
   getUserByStripeId,
   incrementUserCredits,
   markRequestAsPaid
-} = require('./helpers/stripeHelper');
+} = require('./helpers/stripeHelper/stripeHelper');
 const { resolvers } = require('./resolvers');
 const { to } = require('./helpers/utils');
 

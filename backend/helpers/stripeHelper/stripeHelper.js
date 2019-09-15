@@ -1,5 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_API_SECRET);
-const { to } = require('./utils');
+const { to } = require('../utils');
 
 const getSku = sku => {
   return new Promise((resolve, reject) => {
@@ -13,10 +13,41 @@ const getSku = sku => {
   });
 };
 
+const validateRequest = (prisma, { requestId }) => {
+  return new Promise(async resolve => {
+    const request = await prisma.request({ id: requestId }).$fragment(`
+      id
+      paymentRef
+      paper {
+        id
+      }
+      pageUploads {
+        id
+      }
+    `);
+
+    const exists = Boolean(request);
+    const { pageUploads, paymentRef, paper } = request;
+
+    resolve({
+      exists,
+      paymentAllowed: Boolean(
+        exists && !paymentRef && pageUploads.length > 0 && paper.id
+      )
+    });
+  });
+};
+
 const createStripeSession = (stripeCustomerId, sku, requestId) => {
   const { price, product, currency } = sku;
 
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
+    const [validationErr, validation] = await validateRequest();
+    if (!validation.paymentAllowed) {
+      reject('Request is invalid for payment');
+      return;
+    }
+
     stripe.checkout.sessions.create(
       {
         customer: stripeCustomerId,
@@ -165,5 +196,6 @@ module.exports = {
   createCustomer,
   getUserByStripeId,
   incrementUserCredits,
-  markRequestAsPaid
+  markRequestAsPaid,
+  validateRequest
 };
