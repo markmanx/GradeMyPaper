@@ -16,13 +16,15 @@ const getSku = sku => {
 const validateRequest = (prisma, { requestId }) => {
   return new Promise(async resolve => {
     const request = await prisma.request({ id: requestId }).$fragment(`
-      id
-      paymentRef
-      paper {
+      fragment RequestValidationParts on Request {
         id
-      }
-      pageUploads {
-        id
+        paymentRef
+        paper {
+          id
+        }
+        pageUploads {
+          id
+        }
       }
     `);
 
@@ -32,7 +34,11 @@ const validateRequest = (prisma, { requestId }) => {
     resolve({
       exists,
       paymentAllowed: Boolean(
-        exists && !paymentRef && pageUploads.length > 0 && paper.id
+        exists &&
+          !paymentRef &&
+          pageUploads &&
+          pageUploads.length > 0 &&
+          paper.id
       )
     });
   });
@@ -42,12 +48,6 @@ const createStripeSession = (stripeCustomerId, sku, requestId) => {
   const { price, product, currency } = sku;
 
   return new Promise(async (resolve, reject) => {
-    const [validationErr, validation] = await validateRequest();
-    if (!validation.paymentAllowed) {
-      reject('Request is invalid for payment');
-      return;
-    }
-
     stripe.checkout.sessions.create(
       {
         customer: stripeCustomerId,

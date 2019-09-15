@@ -1,8 +1,9 @@
 const {
   createStripeSession,
   getSku,
-  createCustomer
-} = require('../helpers/stripeHelper');
+  createCustomer,
+  validateRequest
+} = require('../helpers/stripeHelper/stripeHelper');
 const { to } = require('../helpers/utils');
 const { config } = require('../config');
 const {
@@ -13,6 +14,16 @@ const { getSignedUrl, getFileCount } = require('../helpers/fileUpload');
 const Mutation = {
   createCheckoutSession: async (parent, args, { user, prisma }) => {
     const { requestId } = args;
+
+    const [validationErr, validation] = await to(
+      validateRequest(prisma, {
+        requestId
+      })
+    );
+
+    if (validationErr || !validation.paymentAllowed) {
+      throw new Error('Request is invalid for payment');
+    }
 
     let stripeCustomerId;
 
