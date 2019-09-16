@@ -3,7 +3,13 @@ import { useQuery } from '@apollo/react-hooks';
 import { Tabs, Tab } from '@material-ui/core';
 
 import { protectedQuery } from '../gql';
-import { Section, SlantedBackground, PapersList, Padder } from '../components';
+import {
+  Section,
+  SlantedBackground,
+  PapersList,
+  Padder,
+  FeedbackList
+} from '../components';
 import { ThemeProviders } from '../context/ThemeProviders';
 
 export const Dashboard = () => {
@@ -35,6 +41,7 @@ export const Dashboard = () => {
           </ThemeProviders>
         </Padder>
         {tabIndex === 0 && <PapersList />}
+        {tabIndex === 1 && <FeedbackList />}
       </Padder>
     </Section>
   );

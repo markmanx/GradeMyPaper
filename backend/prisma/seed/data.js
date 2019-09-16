@@ -13,6 +13,7 @@ const papers = [
     board: BOARD.AQA,
     title: 'A-Level Biology June 2018 | Paper 1',
     qualification: QUALIFICATION.ALEVEL,
+    totalMarks: 100,
     questionsUrl:
       'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74021-QP-JUN18.PDF',
     markSchemeUrl:
@@ -23,6 +24,7 @@ const papers = [
     board: BOARD.AQA,
     title: 'AS-Level Biology June 2018 | Paper 1',
     qualification: QUALIFICATION.ASLEVEL,
+    totalMarks: 100,
     questionsUrl:
       'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74011-QP-JUN18.PDF',
     markSchemeUrl:
@@ -33,6 +35,7 @@ const papers = [
     board: BOARD.AQA,
     title: 'A-Level Biology June 2018 | Paper 2',
     qualification: QUALIFICATION.ALEVEL,
+    totalMarks: 100,
     questionsUrl:
       'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74022-QP-JUN18.PDF',
     markSchemeUrl:
@@ -43,6 +46,7 @@ const papers = [
     board: BOARD.AQA,
     title: 'AS-Level Biology June 2018 | Paper 2',
     qualification: QUALIFICATION.ASLEVEL,
+    totalMarks: 100,
     questionsUrl:
       'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74012-QP-JUN18.PDF',
     markSchemeUrl:
@@ -53,6 +57,7 @@ const papers = [
     board: BOARD.AQA,
     title: 'A-Level Biology June 2018 | Paper 3',
     qualification: QUALIFICATION.ALEVEL,
+    totalMarks: 100,
     questionsUrl:
       'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74023-QP-JUN18.PDF',
     markSchemeUrl:

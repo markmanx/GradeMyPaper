@@ -9,3 +9,5 @@ export * from './PaperListItem/PaperListItem';
 export * from './ProtectedRoute';
 export * from './FileUploader';
 export * from './CheckoutButton';
+export * from './FeedbackListItem';
+export * from './FeedbackList';

@@ -6,6 +6,7 @@ const paperFragment = `
   qualification
   questionsUrl
   markSchemeUrl
+  totalMarks
 `;
 
 module.exports = {

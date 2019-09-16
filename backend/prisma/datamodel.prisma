@@ -21,6 +21,7 @@ type Paper {
   board: Board!
   title: String!
   qualification: Qualification!
+  totalMarks: Int!
   questionsUrl: String!
   markSchemeUrl: String!
 }
@@ -36,4 +37,13 @@ type Request {
   paymentRef: String
   paper: Paper! @relation(link: TABLE)
   pageUploads: [PageUpload!]!
+  feedback: Feedback @relation(link: TABLE)
+}
+
+type Feedback {
+  id: ID! @id
+  grade: String!
+  marks: Int!
+  fileUrl: String
+  request: Request!
 }

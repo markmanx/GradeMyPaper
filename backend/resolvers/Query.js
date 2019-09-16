@@ -18,6 +18,15 @@ const Query = {
     return prisma
       .request({ id: requestId })
       .$fragment(requestWithPaperFragment);
+  },
+  requests: async (parent, args, { prisma }) => {
+    const confirmedRequests = await prisma
+      .requests({
+        where: { paymentRef_not: null }
+      })
+      .$fragment(requestWithPaperFragment);
+
+    return confirmedRequests;
   }
 };
 

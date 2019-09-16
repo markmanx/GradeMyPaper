@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import { Card, Divider, Grid } from '@material-ui/core';
 
-import { useRequestQuery } from '../gql/queries/requestQuery';
+import { useRequestQuery } from '../gql';
 
 import {
   Section,
