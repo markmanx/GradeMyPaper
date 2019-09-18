@@ -9,7 +9,11 @@ const { config } = require('../config');
 const {
   requestWithPaperFragment
 } = require('../fragments/requestWithPaperFragment');
-const { getSignedUrl, getFileCount } = require('../helpers/fileUpload');
+const {
+  getSignedUrl,
+  getFileCount,
+  getDownloadPresignedUrl
+} = require('../helpers/fileUpload');
 
 const Mutation = {
   createCheckoutSession: async (parent, args, { user, prisma }) => {
@@ -93,6 +97,33 @@ const Mutation = {
     });
 
     const url = await getSignedUrl(request.id, pageUpload.id);
+
+    return url;
+  },
+  getDownloadPresignedUrl: async (parent, args, { user, prisma }) => {
+    const { requestId } = args;
+
+    const [feedbackErr, feedback] = await to(
+      prisma.feedbacks({
+        where: { request: { id: requestId } }
+      })
+    );
+
+    if (feedbackErr || !feedback.length) {
+      throw new Error('Cannot get feedback. Please contact us directly.');
+    }
+
+    console.log(feedback);
+
+    const [urlErr, url] = await to(
+      getDownloadPresignedUrl(requestId, feedback[0].filename)
+    );
+
+    if (urlErr) {
+      throw new Error(
+        'Could not generate a presigned url for this feedback.  Please contact us directly.'
+      );
+    }
 
     return url;
   }

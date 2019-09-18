@@ -44,7 +44,25 @@ const getSignedUrl = (requestId, key) => {
   });
 };
 
+const getDownloadPresignedUrl = (requestId, key) => {
+  return new Promise((resolve, reject) => {
+    s3.getSignedUrl(
+      'getObject',
+      { ...params, Key: `${uploadsDir}/${requestId}/${key}` },
+      (err, url) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        resolve(url);
+      }
+    );
+  });
+};
+
 module.exports = {
   getSignedUrl,
+  getDownloadPresignedUrl,
   getFileCount
 };

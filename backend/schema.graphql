@@ -22,4 +22,5 @@ type Mutation {
   initiateRequest(id: String!): Request!
   createCheckoutSession(requestId: String!): CheckoutSessionStatus!
   generatePresignedUrl(requestId: String!): String
+  getDownloadPresignedUrl(requestId: String!): String
 }

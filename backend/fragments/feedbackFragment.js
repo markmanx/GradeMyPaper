@@ -1,7 +1,7 @@
 const feedbackFragment = `
   id
   grade
-  fileUrl
+  filename
   marks
 `;
 

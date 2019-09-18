@@ -44,6 +44,6 @@ type Feedback {
   id: ID! @id
   grade: String!
   marks: Int!
-  fileUrl: String
+  filename: String
   request: Request!
 }

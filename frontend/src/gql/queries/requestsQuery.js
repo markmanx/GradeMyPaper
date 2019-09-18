@@ -13,7 +13,6 @@ const requestsQuery = gql`
       feedback {
         marks
         grade
-        fileUrl
       }
     }
   }

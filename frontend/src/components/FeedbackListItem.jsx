@@ -41,7 +41,7 @@ const ActionsWrapper = styled.div`
   display: flex;
 `;
 
-export const FeedbackListItem = ({ request }) => {
+export const FeedbackListItem = ({ request, onSeeFeedbackClicked }) => {
   const { feedback, paper } = request;
 
   return (
@@ -77,7 +77,7 @@ export const FeedbackListItem = ({ request }) => {
         {feedback && (
           <ListItemSecondaryAction>
             <ActionsWrapper>
-              <Button onClick={() => {}}>Download feedback</Button>
+              <Button onClick={onSeeFeedbackClicked}>See feedback</Button>
             </ActionsWrapper>
           </ListItemSecondaryAction>
         )}
