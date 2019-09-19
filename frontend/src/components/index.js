@@ -11,3 +11,5 @@ export * from './CheckoutButton';
 export * from './FeedbackListItem';
 export * from './FeedbackList';
 export * from './Header/Header';
+export * from './Footer';
+export * from './ContactForm';

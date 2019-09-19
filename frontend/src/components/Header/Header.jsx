@@ -33,8 +33,8 @@ const NavWrapper = styled.div`
   display: flex;
 
   ${({ theme }) => css`
-    & > *:not(:first-child, :last-child) {
-      padding-left: ${theme.baseUnit}px;
+    & > *:not(:first-child) {
+      padding-left: ${theme.baseUnit * 0.5}px;
     }
   `}
 `;
@@ -42,6 +42,7 @@ const NavWrapper = styled.div`
 const StyledText = styled(Text)`
   display: flex;
   align-items: center;
+  padding-left: 0;
 `;
 
 export const Header = () => {
@@ -54,6 +55,12 @@ export const Header = () => {
   const onSignIn = () => {
     loginWithRedirect({});
   };
+
+  const ContactButton = () => (
+    <Button variant="text" size="small" onClick={logout}>
+      Contact
+    </Button>
+  );
 
   return (
     <ThemeProviders type="dark">
@@ -75,6 +82,7 @@ export const Header = () => {
                     >
                       Dashboard
                     </Button>
+                    <ContactButton />
                     <Button variant="text" size="small" onClick={logout}>
                       Sign out
                     </Button>
@@ -85,9 +93,12 @@ export const Header = () => {
                     )}
                   </>
                 ) : (
-                  <Button variant="contained" size="small" onClick={onSignIn}>
-                    Sign in
-                  </Button>
+                  <>
+                    <Button variant="contained" size="small" onClick={onSignIn}>
+                      Sign in
+                    </Button>
+                    <ContactButton />
+                  </>
                 )}
               </NavWrapper>
             </WrapperInner>
