@@ -17,7 +17,8 @@ export const Text = ({
   variant = 'body1',
   textColor = 'primary',
   bold = false,
-  children
+  children,
+  className
 }) => {
   return (
     <Wrapper
@@ -25,6 +26,7 @@ export const Text = ({
       variant={variant}
       textColor={textColor}
       bold={bold}
+      className={className}
     >
       {children}
     </Wrapper>

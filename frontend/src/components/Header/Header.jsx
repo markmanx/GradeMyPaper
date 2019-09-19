@@ -8,7 +8,7 @@ import { ThemeProviders } from '../../context/ThemeProviders';
 import logo from './assets/logo.png';
 import { useAuth0 } from '../../context/auth0';
 import { meQuery } from '../../gql';
-import { Section, Padder, Button } from '../../components';
+import { Section, Padder, Button, Text } from '../../components';
 
 const Wrapper = styled.div`
   position: absolute;
@@ -33,10 +33,15 @@ const NavWrapper = styled.div`
   display: flex;
 
   ${({ theme }) => css`
-    & > *:not(:first-child) {
+    & > *:not(:first-child, :last-child) {
       padding-left: ${theme.baseUnit}px;
     }
   `}
+`;
+
+const StyledText = styled(Text)`
+  display: flex;
+  align-items: center;
 `;
 
 export const Header = () => {
@@ -60,28 +65,30 @@ export const Header = () => {
                 <Logo src={logo} />
               </Link>
               <NavWrapper>
-                {ready && (
-                  <div>
-                    Logged in as {data.me.email} Credits: {data.me.credits}
-                  </div>
-                )}
-                {isAuthenticated && (
-                  <Button
-                    size="small"
-                    onClick={() => {
-                      history.push('/dashboard');
-                    }}
-                  >
-                    Dashboard
+                {isAuthenticated ? (
+                  <>
+                    <Button
+                      size="small"
+                      onClick={() => {
+                        history.push('/dashboard');
+                      }}
+                    >
+                      Dashboard
+                    </Button>
+                    <Button variant="text" size="small" onClick={logout}>
+                      Sign out
+                    </Button>
+                    {ready && (
+                      <StyledText bold variant="body2" textColor="hint">
+                        |&nbsp;&nbsp;{data.me.email}
+                      </StyledText>
+                    )}
+                  </>
+                ) : (
+                  <Button variant="contained" size="small" onClick={onSignIn}>
+                    Sign in
                   </Button>
                 )}
-                <Button
-                  variant={isAuthenticated ? 'text' : 'contained'}
-                  size="small"
-                  onClick={isAuthenticated ? logout : onSignIn}
-                >
-                  {isAuthenticated ? 'Sign out' : 'Sign in'}
-                </Button>
               </NavWrapper>
             </WrapperInner>
           </Padder>
