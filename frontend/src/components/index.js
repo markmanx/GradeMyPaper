@@ -1,4 +1,6 @@
 export * from './Text';
+export * from './Loader';
+export * from './ErrorSnackbar';
 export * from './Section';
 export * from './SlantedBackground';
 export * from './Padder';

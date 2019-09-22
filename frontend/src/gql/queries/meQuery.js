@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { useQuery } from '@apollo/react-hooks';
 
 export const meQuery = gql`
   query {
@@ -9,3 +10,7 @@ export const meQuery = gql`
     }
   }
 `;
+
+export const useMeQuery = () => {
+  return useQuery(meQuery);
+};
