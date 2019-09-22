@@ -11,13 +11,13 @@ const transporter = nodemailer.createTransport({
 });
 
 const buildEmailTemplate = {
-  newUser: ({ userName }) => ({
+  newUser: ({ userEmail }) => ({
     subject: 'A new user has signed up to GradeMyPaper',
     html: `<b>${userName}</b> has signed up to GradeMyPaper.`
   }),
-  newRequest: ({ userName, requestId }) => ({
+  newRequest: ({ requestId }) => ({
     subject: 'A new submission was recieved through GradeMyPaper',
-    html: `<b>${userName}</b> has made a submission.  The request ID is ${requestId}.  Please ask the system admin for further details.`
+    html: `The request ID is ${requestId}.  Please ask the system admin for further details.`
   }),
   newMessage: ({ email, message }) => ({
     subject: 'A new message was received through GradeMyPaper',

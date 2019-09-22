@@ -78,6 +78,9 @@ app.post(
           metadata: { requestId }
         } = data.object;
 
+        const emailTemplate = buildEmailTemplate.newRequest({ requestId });
+        const [emailErr] = await to(sendEmail(emailTemplate));
+
         if (requestId) {
           const [updateRequestErr] = await to(
             markRequestAsPaid(prisma, {
@@ -116,8 +119,8 @@ app.post(
     }
   }
 );
-app.use(express.json());
 
+app.use(express.json());
 app.use((req, res, next) => {
   res.set('Access-Control-Allow-Headers', 'Content-Type');
   res.set('Access-Control-Allow-Origin', '*');
