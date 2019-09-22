@@ -10,7 +10,7 @@ const Background = styled.div`
   height: 100%;
 
   ${({ theme }) => css`
-    background-color: ${theme.palette.primary.dark};
+    background-color: ${theme.palette.grey['900']};
   `}
 `;
 

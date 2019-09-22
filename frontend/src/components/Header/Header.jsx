@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components/macro';
 import { useQuery } from '@apollo/react-hooks';
 import { Link } from 'react-router-dom';
+import CookieConsent from 'react-cookie-consent';
 
 import { useRouter } from '../../hooks/useRouter';
 import { ThemeProviders } from '../../context/ThemeProviders';
@@ -124,6 +125,9 @@ export const Header = () => {
         isOpen={contactModalOpen}
         handleClose={onContactModalClose}
       />
+      <CookieConsent>
+        This website uses cookies to enhance the user experience.
+      </CookieConsent>
     </>
   );
 };
