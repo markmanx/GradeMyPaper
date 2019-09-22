@@ -1,4 +1,6 @@
 export * from './Text';
+export * from './Loader';
+export * from './ErrorSnackbar';
 export * from './Section';
 export * from './SlantedBackground';
 export * from './Padder';
@@ -11,3 +13,5 @@ export * from './CheckoutButton';
 export * from './FeedbackListItem';
 export * from './FeedbackList';
 export * from './Header/Header';
+export * from './Footer';
+export * from './ContactForm';

@@ -27,15 +27,18 @@ export const Padder = ({
   paddingTop,
   paddingBottom,
   paddingVertical,
-  paddingHorizontal
+  paddingHorizontal,
+  tag = 'div'
 }) => {
   return (
     <Wrapper
       paddingRight={paddingRight}
+      paddingLeft={paddingLeft}
       paddingTop={paddingTop}
       paddingBottom={paddingBottom}
       paddingVertical={paddingVertical}
       paddingHorizontal={paddingHorizontal}
+      as={tag}
     >
       {children}
     </Wrapper>

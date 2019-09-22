@@ -9,7 +9,9 @@ const { applyMiddleware } = require('graphql-middleware');
 const { prisma } = require('./prisma/generated');
 const { rule, shield } = require('graphql-shield');
 const bodyParser = require('body-parser');
+const { body, validationResult } = require('express-validator');
 
+const { sendEmail, buildEmailTemplate } = require('./helpers/emailHelper');
 const { authenticationMiddleware } = require('./helpers/authenticationHelper');
 const {
   validateStripeEvent,
@@ -112,6 +114,41 @@ app.post(
       default:
         return res.status(400).end();
     }
+  }
+);
+app.use(express.json());
+
+app.use((req, res, next) => {
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Content-Type', 'application/json');
+  next();
+});
+
+app.post(
+  '/sendMessage',
+  [
+    body('email')
+      .isEmail()
+      .normalizeEmail()
+      .withMessage('This email address is invalid'),
+    body('message')
+      .trim()
+      .escape()
+  ],
+  async (req, res) => {
+    const { errors } = validationResult(req);
+
+    if (errors.length) {
+      res.status(500).send(errors[0].msg);
+    }
+
+    const { email, message } = req.body;
+    const emailTemplate = buildEmailTemplate.newMessage({ email, message });
+
+    await sendEmail(emailTemplate);
+
+    res.send();
   }
 );
 

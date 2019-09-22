@@ -25,7 +25,7 @@ export const Dashboard = () => {
   };
 
   return (
-    <Section bgChildren={<SlantedBackground slantBottom />}>
+    <Section bgChildren={<SlantedBackground />}>
       <Padder paddingTop={8} paddingBottom={6}>
         <Padder paddingBottom={1}>
           <ThemeProviders type="dark">
@@ -40,6 +40,7 @@ export const Dashboard = () => {
             </Tabs>
           </ThemeProviders>
         </Padder>
+
         {tabIndex === 0 && <PapersList />}
         {tabIndex === 1 && <FeedbackList />}
       </Padder>

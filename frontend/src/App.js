@@ -5,7 +5,7 @@ import { ThemeProviders } from './context/ThemeProviders';
 import { Auth0Provider } from './context/auth0';
 import { Provider as ApolloProvider } from './helpers/apolloClient';
 import { GlobalStyle } from './helpers/globalStyles';
-import { Header } from './components';
+import { Header, Footer } from './components';
 import { Routes } from './Routes';
 
 function App() {
@@ -22,6 +22,7 @@ function App() {
           <Router>
             <Header />
             <Routes />
+            <Footer />
           </Router>
         </ThemeProviders>
       </Auth0Provider>
