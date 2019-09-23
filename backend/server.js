@@ -32,9 +32,7 @@ const isAuthenticated = rule()(async (parent, args, ctx, info) => {
 });
 
 const permissions = shield({
-  Query: {
-    protectedQuery: isAuthenticated
-  },
+  Query: {},
   Mutation: {
     createCheckoutSession: isAuthenticated,
     initiateRequest: isAuthenticated

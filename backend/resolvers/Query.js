@@ -11,9 +11,6 @@ const Query = {
   papers: (parent, args, ctx) => {
     return ctx.prisma.papers({});
   },
-  protectedQuery: (parent, args, ctx) => {
-    return 'This is protected data';
-  },
   request: (parent, { requestId }, { prisma }) => {
     return prisma
       .request({ id: requestId })
