@@ -4,6 +4,7 @@ type User {
   stripeCustomerId: String
   auth0Id: String! @unique
   credits: Int!
+  requests: [Request!]!
 }
 
 enum Qualification {
@@ -38,6 +39,7 @@ type Request {
   paper: Paper! @relation(link: TABLE)
   pageUploads: [PageUpload!]!
   feedback: Feedback @relation(link: TABLE)
+  user: User! @relation(link: TABLE)
 }
 
 type Feedback {

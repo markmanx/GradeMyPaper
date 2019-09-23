@@ -73,12 +73,14 @@ const Mutation = {
 
     return { sessionId: session.id };
   },
-  initiateRequest: async (parent, args, { user, prisma }) => {
+  initiateRequest: async (parent, args, ctx) => {
     const { id } = args;
+    const { user, prisma } = ctx;
 
     const request = await prisma
       .createRequest({
-        paper: { connect: { id } }
+        paper: { connect: { id } },
+        user: { connect: { id: user.id } }
       })
       .$fragment(requestWithPaperFragment);
 
