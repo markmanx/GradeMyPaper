@@ -13,7 +13,6 @@ type CheckoutSessionStatus {
 type Query {
   me: User
   papers: [Paper!]!
-  protectedQuery: String!
   request(requestId: String!): Request
   requests: [Request!]!
 }

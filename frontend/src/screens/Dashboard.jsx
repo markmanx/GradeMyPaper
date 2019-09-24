@@ -1,8 +1,6 @@
 import React from 'react';
-import { useQuery } from '@apollo/react-hooks';
 import { Tabs, Tab } from '@material-ui/core';
 
-import { protectedQuery } from '../gql';
 import {
   Section,
   SlantedBackground,
@@ -13,12 +11,7 @@ import {
 import { ThemeProviders } from '../context/ThemeProviders';
 
 export const Dashboard = () => {
-  const { loading, error, data } = useQuery(protectedQuery);
   const [tabIndex, setTabIndex] = React.useState(0);
-
-  if (loading || error || !data) {
-    return <div>Cannot load data</div>;
-  }
 
   const onTabChange = (_, tabIndex) => {
     setTabIndex(tabIndex);
