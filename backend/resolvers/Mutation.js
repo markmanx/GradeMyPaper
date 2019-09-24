@@ -16,8 +16,9 @@ const {
 } = require('../helpers/fileUpload');
 
 const Mutation = {
-  createCheckoutSession: async (parent, args, { user, prisma }) => {
+  createCheckoutSession: async (parent, args, ctx) => {
     const { requestId } = args;
+    const { user, prisma } = ctx;
 
     const [validationErr, validRequest] = await to(
       validateRequest(prisma, {
@@ -37,7 +38,6 @@ const Mutation = {
       );
 
       if (newCustomerErr || !newCustomer) {
-        console.log(newCustomerErr);
         throw new Error('Could not create customer');
       }
 
@@ -86,10 +86,19 @@ const Mutation = {
 
     return request;
   },
-  generatePresignedUrl: async (parent, args, { user, prisma }) => {
+  generatePresignedUrl: async (parent, args, ctx) => {
     const { requestId } = args;
+    const { user, prisma } = ctx;
 
-    const request = await prisma.request({ id: requestId });
+    const requests = await prisma.requests({
+      where: { id: requestId, user: { id: user.id } }
+    });
+
+    const request = requests[0] || null;
+
+    if (!request) {
+      throw new Error('Request not found');
+    }
 
     const fileCount = await getFileCount(requestId);
 
@@ -102,20 +111,19 @@ const Mutation = {
 
     return url;
   },
-  getDownloadPresignedUrl: async (parent, args, { user, prisma }) => {
+  getDownloadPresignedUrl: async (parent, args, ctx) => {
     const { requestId } = args;
+    const { user, prisma } = ctx;
 
     const [feedbackErr, feedback] = await to(
       prisma.feedbacks({
-        where: { request: { id: requestId } }
+        where: { request: { id: requestId, user: { id: user.id } } }
       })
     );
 
     if (feedbackErr || !feedback.length) {
       throw new Error('Cannot get feedback. Please contact us directly.');
     }
-
-    console.log(feedback);
 
     const [urlErr, url] = await to(
       getDownloadPresignedUrl(requestId, feedback[0].filename)
