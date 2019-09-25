@@ -29,7 +29,7 @@ const theme = {
     }
   },
   gradients: {
-    primary: `linear-gradient(90deg, ${PRIMARY_COLOR[400]} 0%, ${
+    primary: `linear-gradient(90deg, ${PRIMARY_COLOR[800]} 0%, ${
       PRIMARY_COLOR[500]
     } 100%)`
   },
