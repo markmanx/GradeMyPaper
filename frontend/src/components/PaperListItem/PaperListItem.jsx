@@ -65,7 +65,7 @@ export const PaperListItem = ({ paper }) => {
       <ListItem
         button
         onClick={() => {
-          window.open(paper.questionPaperUrl, '_blank');
+          window.open(paper.questionsUrl, '_blank');
         }}
         divider
       >
