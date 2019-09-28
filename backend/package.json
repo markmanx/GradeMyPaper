@@ -8,6 +8,7 @@
     "start:prod": "node server.js",
     "start": "nodemon -r dotenv/config server.js",
     "start:prisma": "cd prisma && docker-compose up -d",
+    "reset:prisma": "cd prisma && prisma reset --env-file ../.env",
     "seed:prisma": "cd prisma && prisma seed --env-file ../.env",
     "generate:prisma:prod": "cd prisma && prisma generate",
     "generate:prisma": "cd prisma && prisma generate --env-file ../.env",
