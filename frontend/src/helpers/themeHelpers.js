@@ -1,11 +1,12 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-import blue from '@material-ui/core/colors/blue';
+import { blue } from '@material-ui/core/colors';
 
 const BASE_UNIT = 20;
+const PRIMARY_COLOR = blue;
 
 const theme = {
   palette: {
-    primary: blue
+    primary: PRIMARY_COLOR
   },
   typography: {
     fontFamily: 'Montserrat',
@@ -28,8 +29,9 @@ const theme = {
     }
   },
   gradients: {
-    primary:
-      'linear-gradient(90deg, rgba(51,89,245,1) 0%, rgba(69,149,236,1) 100%)'
+    primary: `linear-gradient(90deg, ${PRIMARY_COLOR[800]} 0%, ${
+      PRIMARY_COLOR[500]
+    } 100%)`
   },
   overrides: {
     MuiCardContent: {
@@ -50,7 +52,7 @@ export const darkTheme = createMuiTheme({
     type: 'dark',
     primary: {
       main: '#FFFFFF',
-      contrastText: blue['800']
+      contrastText: PRIMARY_COLOR['800']
     },
     secondary: {
       ...theme.palette.primary

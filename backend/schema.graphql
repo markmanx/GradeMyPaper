@@ -1,18 +1,25 @@
+# import * from "./prisma/generated/prisma.graphql"
+
 type User {
   id: String!
   email: String!
   credits: Int!
 }
 
-type Query {
-  me: User
-  protectedQuery: String!
-}
-
 type CheckoutSessionStatus {
   sessionId: String
 }
 
+type Query {
+  me: User
+  papers: [Paper!]!
+  request(requestId: String!): Request
+  requests: [Request!]!
+}
+
 type Mutation {
-  createCheckoutSession: CheckoutSessionStatus!
+  initiateRequest(id: String!): Request!
+  createCheckoutSession(requestId: String!): CheckoutSessionStatus!
+  generatePresignedUrl(requestId: String!): String
+  getDownloadPresignedUrl(requestId: String!): String
 }

@@ -8,8 +8,10 @@ import {
   ListItemSecondaryAction
 } from '@material-ui/core';
 
+import { useInitiateRequestMutation } from '../../gql';
 import { Button } from '../../components';
 import aqaLogoImg from './assets/aqa-board.png';
+import { useRouter } from '../../hooks/useRouter.js';
 
 const Wrapper = styled.div`
   ${({ theme }) => css`
@@ -36,12 +38,34 @@ const AqaLogo = styled.img`
 `;
 
 export const PaperListItem = ({ paper }) => {
+  const { history } = useRouter();
+  const [initiateRequestMutation] = useInitiateRequestMutation();
+
+  const onGetFeedback = async () => {
+    const initiatedRequest = await initiateRequestMutation({
+      variables: { id: paper.id }
+    });
+
+    if (
+      initiatedRequest.loading ||
+      initiatedRequest.error ||
+      !initiatedRequest ||
+      !initiatedRequest.data
+    ) {
+      return null;
+    }
+
+    history.push(
+      `/request-feedback/${initiatedRequest.data.initiateRequest.id}`
+    );
+  };
+
   return (
     <Wrapper>
       <ListItem
         button
         onClick={() => {
-          window.open(paper.questionPaperUrl, '_blank');
+          window.open(paper.questionsUrl, '_blank');
         }}
         divider
       >
@@ -60,7 +84,7 @@ export const PaperListItem = ({ paper }) => {
             >
               Download mark scheme
             </Button>
-            <Button>Get feedback</Button>
+            <Button onClick={onGetFeedback}>Get feedback</Button>
           </ActionsWrapper>
         </ListItemSecondaryAction>
       </ListItem>

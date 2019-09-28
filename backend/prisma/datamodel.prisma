@@ -4,4 +4,48 @@ type User {
   stripeCustomerId: String
   auth0Id: String! @unique
   credits: Int!
+  requests: [Request!]!
+}
+
+enum Qualification {
+  ALEVEL
+  ASLEVEL
+}
+
+enum Board {
+  AQA
+}
+
+type Paper {
+  id: ID! @id
+  paperId: String! @unique
+  board: Board!
+  title: String!
+  qualification: Qualification!
+  totalMarks: Int!
+  questionsUrl: String!
+  markSchemeUrl: String!
+}
+
+type PageUpload {
+  id: ID! @id
+  order: Int!
+  request: Request! @relation(link: INLINE)
+}
+
+type Request {
+  id: ID! @id
+  paymentRef: String
+  paper: Paper! @relation(link: TABLE)
+  pageUploads: [PageUpload!]!
+  feedback: Feedback @relation(link: TABLE)
+  user: User! @relation(link: TABLE)
+}
+
+type Feedback {
+  id: ID! @id
+  grade: String!
+  marks: Int!
+  filename: String
+  request: Request!
 }

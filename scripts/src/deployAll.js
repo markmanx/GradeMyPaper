@@ -66,7 +66,6 @@ const deployAll = async () => {
       APP_NAME: config.appName,
       PRISMA_PORT: config.prisma.port,
       PRISMA_ENDPOINT: `http://localhost:${config.prisma.port}`,
-      PRISMA_SECRET: config.prisma.secret,
       PRISMA_MANAGEMENT_API_SECRET: config.prisma.management_secret,
       APOLLO_SERVER_PORT: config.apollo_server.port,
       STRIPE_SUCCESS_REDIRECT: config.stripe.success_redirect,

@@ -1,15 +1,20 @@
 import React from 'react';
-import styled from 'styled-components/macro';
 import { List } from '@material-ui/core';
 
-import { papers } from '../data/papers';
 import { PaperListItem } from '../components';
+import { usePapersQuery } from '../gql/queries/papersQuery';
 
 export const PapersList = () => {
+  const { data, loading, error } = usePapersQuery();
+
+  if (loading || error || !data) {
+    return null;
+  }
+
   return (
     <List>
-      {papers.map(paper => (
-        <PaperListItem paper={paper} />
+      {data.papers.map(paper => (
+        <PaperListItem paper={paper} key={paper.id} />
       ))}
     </List>
   );

@@ -6,17 +6,19 @@ const {
 } = require('apollo-server-express');
 const { importSchema } = require('graphql-import');
 const { applyMiddleware } = require('graphql-middleware');
-const { prisma } = require('./prisma/generated/prisma');
-const { rule, shield, and, or, not } = require('graphql-shield');
-const jwt = require('jsonwebtoken');
-const jwksClient = require('jwks-rsa');
+const { prisma } = require('./prisma/generated');
+const { rule, shield } = require('graphql-shield');
 const bodyParser = require('body-parser');
-const request = require('request-promise-native');
+const { body, validationResult } = require('express-validator');
 
+const { sendEmail, buildEmailTemplate } = require('./helpers/emailHelper');
+const { authenticationMiddleware } = require('./helpers/authenticationHelper');
 const {
   validateStripeEvent,
-  onPaymentIntentSucceeded
-} = require('./helpers/stripe');
+  getUserByStripeId,
+  incrementUserCredits,
+  markRequestAsPaid
+} = require('./helpers/stripeHelper/stripeHelper');
 const { resolvers } = require('./resolvers');
 const { to } = require('./helpers/utils');
 
@@ -31,10 +33,14 @@ const isAuthenticated = rule()(async (parent, args, ctx, info) => {
 
 const permissions = shield({
   Query: {
-    protectedQuery: isAuthenticated
+    request: isAuthenticated,
+    requests: isAuthenticated
   },
   Mutation: {
-    createCheckoutSession: isAuthenticated
+    createCheckoutSession: isAuthenticated,
+    initiateRequest: isAuthenticated,
+    generatePresignedUrl: isAuthenticated,
+    getDownloadPresignedUrl: isAuthenticated
   }
 });
 
@@ -44,75 +50,7 @@ const schemaWithMiddleware = applyMiddleware(schema, permissions);
 const server = new ApolloServer({
   schema: schemaWithMiddleware,
   context: async ({ req }) => {
-    // get the user token from the headers
-    const token =
-      (req.headers.authorization &&
-        req.headers.authorization.replace('Bearer ', '')) ||
-      '';
-
-    // try to retrieve a user with the token
-    const decoded = jwt.decode(token, { complete: true });
-
-    if (decoded !== null) {
-      const kid = decoded.header.kid;
-
-      let signingKey;
-
-      try {
-        signingKey = await new Promise((resolve, reject) => {
-          const jwks = jwksClient({
-            cache: true,
-            rateLimit: true,
-            jwksRequestsPerMinute: 10, // Default value
-            jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`
-          });
-          jwks.getSigningKey(kid, (err, key) => {
-            if (err || !key) {
-              reject();
-              return;
-            }
-            resolve(key.publicKey || key.rsaPublicKey);
-          });
-        });
-      } catch (e) {
-        throw new AuthenticationError('Not a valid token');
-        return;
-      }
-
-      const verified = await new Promise((resolve, reject) => {
-        jwt.verify(token, signingKey, (err, decoded) => {
-          if (err || !decoded) {
-            reject();
-            return;
-          }
-          resolve(decoded);
-        });
-      });
-
-      const { sub } = verified;
-
-      let user = await prisma.user({
-        auth0Id: sub
-      });
-
-      if (!user) {
-        const userInfo = await new request.get({
-          url: `https://${process.env.AUTH0_DOMAIN}/userinfo`,
-          json: true,
-          headers: { Authorization: req.headers.authorization }
-        });
-
-        user = await prisma.createUser({
-          auth0Id: userInfo.sub,
-          email: userInfo.email,
-          credits: 0
-        });
-      }
-
-      return { user, prisma };
-    }
-
-    return { user: null, prisma };
+    return authenticationMiddleware(req, prisma);
   }
 });
 
@@ -138,35 +76,43 @@ app.post(
     switch (type) {
       case 'payment_intent.succeeded':
         const {
-          object: { customer }
-        } = data;
+          id,
+          customer,
+          metadata: { requestId }
+        } = data.object;
 
-        if (!customer) {
-          throw new Error('Could not retrieve customer');
+        const emailTemplate = buildEmailTemplate.newRequest({ requestId });
+        const [emailErr] = await to(sendEmail(emailTemplate));
+
+        if (requestId) {
+          const [updateRequestErr] = await to(
+            markRequestAsPaid(prisma, {
+              requestId,
+              stripeSessionId: id
+            })
+          );
+
+          console.log(updateRequestErr);
+
+          if (!updateRequestErr) {
+            res.status(200).end();
+            return;
+          }
         }
 
-        const [userMatchesErr, userMatches] = await to(
-          prisma.users({ where: { stripeCustomerId: customer } })
-        );
-
-        if (userMatchesErr || !userMatches.length) {
-          throw new Error('Could not retrieve user');
-        }
-
-        const user = userMatches[0];
-
-        const [updatedUserErr, updatedUser] = await to(
-          prisma.updateUser({
-            data: { credits: user.credits + 1 },
-            where: { id: user.id }
+        const [userErr, user] = await to(
+          getUserByStripeId(prisma, {
+            stripeCustomerId: customer
           })
         );
 
-        if (updatedUserErr || !updatedUser) {
-          throw new Error('Could not update user credits');
+        if (userErr) {
+          res.status(500).end();
+          return;
         }
 
-        return res.status(200).end();
+        await incrementUserCredits(prisma, { userId: user.id });
+
         break;
       // case 'payment_intent.failed':
       //   return res.status(200).end();
@@ -174,6 +120,41 @@ app.post(
       default:
         return res.status(400).end();
     }
+  }
+);
+
+app.use(express.json());
+app.use((req, res, next) => {
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Content-Type', 'application/json');
+  next();
+});
+
+app.post(
+  '/sendMessage',
+  [
+    body('email')
+      .isEmail()
+      .normalizeEmail()
+      .withMessage('This email address is invalid'),
+    body('message')
+      .trim()
+      .escape()
+  ],
+  async (req, res) => {
+    const { errors } = validationResult(req);
+
+    if (errors.length) {
+      res.status(500).send(errors[0].msg);
+    }
+
+    const { email, message } = req.body;
+    const emailTemplate = buildEmailTemplate.newMessage({ email, message });
+
+    await sendEmail(emailTemplate);
+
+    res.send();
   }
 );
 
