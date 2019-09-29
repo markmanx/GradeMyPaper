@@ -2,33 +2,31 @@ const stripe = require('stripe')(process.env.STRIPE_API_SECRET);
 const { to } = require('../utils');
 const errorMessages = require('../../messages/errorMessages');
 
-const getSku = sku => {
-  return new Promise((resolve, reject) => {
-    stripe.skus.retrieve(sku, { expand: ['product'] }, (err, data) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve(data);
-    });
+const getSku = (sku) => new Promise((resolve, reject) => {
+  stripe.skus.retrieve(sku, { expand: ['product'] }, (err, data) => {
+    if (err) {
+      reject(err);
+      return;
+    }
+    resolve(data);
   });
-};
+});
 
-const validateRequest = (prisma, { requestId }) => {
-  return new Promise(async (resolve, reject) => {
-    const request = await prisma.request({ id: requestId }).$fragment(`
-      fragment RequestValidationParts on Request {
+const validateRequest = async (prisma, { requestId }) => {
+  const request = await prisma.request({ id: requestId }).$fragment(`
+    fragment RequestValidationParts on Request {
+      id
+      paymentRef
+      paper {
         id
-        paymentRef
-        paper {
-          id
-        }
-        pageUploads {
-          id
-        }
       }
-    `);
+      pageUploads {
+        id
+      }
+    }
+  `);
 
+  return new Promise((resolve, reject) => {
     const { pageUploads, paymentRef } = request;
 
     if (!request) {
@@ -50,7 +48,7 @@ const validateRequest = (prisma, { requestId }) => {
 const createStripeSession = (stripeCustomerId, sku, requestId) => {
   const { price, product, currency } = sku;
 
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     stripe.checkout.sessions.create(
       {
         customer: stripeCustomerId,
@@ -64,17 +62,17 @@ const createStripeSession = (stripeCustomerId, sku, requestId) => {
             images: product.images,
             amount: price,
             currency,
-            quantity: 1
-          }
+            quantity: 1,
+          },
         ],
         payment_intent_data: {
           description: `Payment intent for ${product.name}`,
           metadata: {
-            requestId
-          }
+            requestId,
+          },
         },
         success_url: process.env.STRIPE_SUCCESS_REDIRECT,
-        cancel_url: process.env.STRIPE_CANCEL_REDIRECT
+        cancel_url: process.env.STRIPE_CANCEL_REDIRECT,
       },
       (err, session) => {
         if (err) {
@@ -82,7 +80,7 @@ const createStripeSession = (stripeCustomerId, sku, requestId) => {
           return;
         }
         resolve(session);
-      }
+      },
     );
   });
 };
@@ -94,7 +92,7 @@ const validateStripeEvent = (body, sig) => {
     event = stripe.webhooks.constructEvent(
       body,
       sig,
-      process.env.STRIPE_WEBHOOK_SIGNING_SECRET
+      process.env.STRIPE_WEBHOOK_SIGNING_SECRET,
     );
   } catch (error) {
     return { error };
@@ -103,93 +101,79 @@ const validateStripeEvent = (body, sig) => {
   return { event };
 };
 
-const createCustomer = email => {
-  return new Promise((resolve, reject) => {
-    stripe.customers.create(
-      {
-        email
-      },
-      (err, data) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(data);
+const createCustomer = (email) => new Promise((resolve, reject) => {
+  stripe.customers.create(
+    {
+      email,
+    },
+    (err, data) => {
+      if (err) {
+        reject(err);
+        return;
       }
-    );
-  });
+      resolve(data);
+    },
+  );
+});
+
+const incrementUserCredits = async (prisma, { userId }) => {
+  const user = await prisma.user({ id: userId });
+
+  if (!user) {
+    throw new Error('User does not exist');
+  }
+
+  const [updatedUserErr] = await to(
+    prisma.updateUser({
+      data: { credits: user.credits + 1 },
+      where: { id: user.id },
+    }),
+  );
+
+  if (updatedUserErr) {
+    throw new Error('Could not update user credits');
+  }
+
+  return null;
 };
 
-const incrementUserCredits = (prisma, { userId }) => {
-  return new Promise(async (resolve, reject) => {
-    const user = await prisma.user({ id: userId });
+const markRequestAsPaid = async (prisma, { requestId, stripeSessionId }) => {
+  const request = await prisma.request({ id: requestId });
 
-    if (!user) {
-      reject('User does not exist');
-      return;
-    }
+  if (!request) {
+    throw new Error('Request does not exist');
+  }
 
-    const [updatedUserErr] = await to(
-      prisma.updateUser({
-        data: { credits: user.credits + 1 },
-        where: { id: user.id }
-      })
-    );
+  if (request.paymentRef) {
+    throw new Error('Request already paid for');
+  }
 
-    if (updatedUserErr) {
-      reject('Could not update user credits');
-      return;
-    }
+  const [err] = await to(
+    prisma.updateRequest({
+      where: { id: requestId },
+      data: {
+        paymentRef: stripeSessionId,
+      },
+    }),
+  );
 
-    resolve();
-  });
+  if (err) {
+    throw new Error('Could not attach paymentRef to request');
+  }
+
+  return null;
 };
 
-const markRequestAsPaid = (prisma, { requestId, stripeSessionId }) => {
-  return new Promise(async (resolve, reject) => {
-    const request = await prisma.request({ id: requestId });
+const getUserByStripeId = async (prisma, { stripeCustomerId }) => {
+  const [userMatchesErr, userMatches] = await to(
+    prisma.users({ where: { stripeCustomerId } }),
+  );
 
-    if (!request) {
-      reject('Request does not exist');
-      return;
-    }
+  if (userMatchesErr || !userMatches.length) {
+    throw new Error('Could not retrieve user');
+  }
 
-    if (request.paymentRef) {
-      reject('Request already paid for');
-      return;
-    }
-
-    const [err] = await to(
-      prisma.updateRequest({
-        where: { id: requestId },
-        data: {
-          paymentRef: stripeSessionId
-        }
-      })
-    );
-
-    if (err) {
-      reject('Could not attach paymentRef to request');
-      return;
-    }
-
-    resolve();
-  });
-};
-
-const getUserByStripeId = (prisma, { stripeCustomerId }) => {
-  return new Promise(async (resolve, reject) => {
-    const [userMatchesErr, userMatches] = await to(
-      prisma.users({ where: { stripeCustomerId } })
-    );
-
-    if (userMatchesErr || !userMatches.length) {
-      reject('Could not retrieve user');
-      return;
-    }
-
-    resolve(userMatches[0]);
-  });
+  return userMatches[0];
 };
 
 module.exports = {
@@ -200,5 +184,5 @@ module.exports = {
   getUserByStripeId,
   incrementUserCredits,
   markRequestAsPaid,
-  validateRequest
+  validateRequest,
 };

@@ -18,5 +18,5 @@ const requestWithPaperFragment = `
 `;
 
 module.exports = {
-  requestWithPaperFragment
+  requestWithPaperFragment,
 };

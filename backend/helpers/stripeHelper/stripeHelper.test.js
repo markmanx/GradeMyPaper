@@ -5,9 +5,9 @@ const REQUEST = {
   id: '123',
   paymentRef: null,
   paper: {
-    id: '123'
+    id: '123',
   },
-  pageUploads: [{ id: '123' }]
+  pageUploads: [{ id: '123' }],
 };
 
 describe('Validates feedback request before payment is made', () => {
@@ -17,8 +17,8 @@ describe('Validates feedback request before payment is made', () => {
 
     const prismaMock = {
       request: jest.fn(() => ({
-        $fragment: () => testRequest
-      }))
+        $fragment: () => testRequest,
+      })),
     };
 
     // Act
@@ -32,13 +32,13 @@ describe('Validates feedback request before payment is made', () => {
     // Arrange
     const testRequest = {
       ...REQUEST,
-      paymentRef: '123'
+      paymentRef: '123',
     };
 
     const prismaMock = {
       request: jest.fn(() => ({
-        $fragment: () => testRequest
-      }))
+        $fragment: () => testRequest,
+      })),
     };
 
     // Act
@@ -52,13 +52,13 @@ describe('Validates feedback request before payment is made', () => {
     // Arrange
     const testRequest = {
       ...REQUEST,
-      pageUploads: []
+      pageUploads: [],
     };
 
     const prismaMock = {
       request: jest.fn(() => ({
-        $fragment: () => testRequest
-      }))
+        $fragment: () => testRequest,
+      })),
     };
 
     // Act
@@ -66,7 +66,7 @@ describe('Validates feedback request before payment is made', () => {
 
     // Assert
     return expect(validated).rejects.toBe(
-      errorMessages.NO_ANSWERSHEETS_UPLOADED
+      errorMessages.NO_ANSWERSHEETS_UPLOADED,
     );
   });
 });

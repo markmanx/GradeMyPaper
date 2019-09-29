@@ -2,22 +2,22 @@ const express = require('express');
 const {
   ApolloServer,
   AuthenticationError,
-  makeExecutableSchema
+  makeExecutableSchema,
 } = require('apollo-server-express');
 const { importSchema } = require('graphql-import');
 const { applyMiddleware } = require('graphql-middleware');
-const { prisma } = require('./prisma/generated');
 const { rule, shield } = require('graphql-shield');
 const bodyParser = require('body-parser');
 const { body, validationResult } = require('express-validator');
 
+const { prisma } = require('./prisma/generated');
 const { sendEmail, buildEmailTemplate } = require('./helpers/emailHelper');
 const { authenticationMiddleware } = require('./helpers/authenticationHelper');
 const {
   validateStripeEvent,
   getUserByStripeId,
   incrementUserCredits,
-  markRequestAsPaid
+  markRequestAsPaid,
 } = require('./helpers/stripeHelper/stripeHelper');
 const { resolvers } = require('./resolvers');
 const { to } = require('./helpers/utils');
@@ -26,7 +26,7 @@ const { to } = require('./helpers/utils');
 const typeDefs = importSchema('schema.graphql');
 
 // Permission rules
-const isAuthenticated = rule()(async (parent, args, ctx, info) => {
+const isAuthenticated = rule()(async (parent, args, ctx) => {
   if (ctx.user !== null) return true;
   return new AuthenticationError('Not Authenticated');
 });
@@ -34,14 +34,14 @@ const isAuthenticated = rule()(async (parent, args, ctx, info) => {
 const permissions = shield({
   Query: {
     request: isAuthenticated,
-    requests: isAuthenticated
+    requests: isAuthenticated,
   },
   Mutation: {
     createCheckoutSession: isAuthenticated,
     initiateRequest: isAuthenticated,
     generatePresignedUrl: isAuthenticated,
-    getDownloadPresignedUrl: isAuthenticated
-  }
+    getDownloadPresignedUrl: isAuthenticated,
+  },
 });
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
@@ -49,9 +49,7 @@ const schemaWithMiddleware = applyMiddleware(schema, permissions);
 
 const server = new ApolloServer({
   schema: schemaWithMiddleware,
-  context: async ({ req }) => {
-    return authenticationMiddleware(req, prisma);
-  }
+  context: async ({ req }) => authenticationMiddleware(req, prisma),
 });
 
 const app = express();
@@ -70,57 +68,48 @@ app.post(
     }
 
     const {
-      event: { type, data }
+      event: { type, data },
     } = validated;
 
-    switch (type) {
-      case 'payment_intent.succeeded':
-        const {
-          id,
-          customer,
-          metadata: { requestId }
-        } = data.object;
+    if (type === 'payment_intent.succeeded') {
+      const {
+        id,
+        customer,
+        metadata: { requestId },
+      } = data.object;
 
-        const emailTemplate = buildEmailTemplate.newRequest({ requestId });
-        const [emailErr] = await to(sendEmail(emailTemplate));
+      const emailTemplate = buildEmailTemplate.newRequest({ requestId });
+      await sendEmail(emailTemplate);
 
-        if (requestId) {
-          const [updateRequestErr] = await to(
-            markRequestAsPaid(prisma, {
-              requestId,
-              stripeSessionId: id
-            })
-          );
-
-          console.log(updateRequestErr);
-
-          if (!updateRequestErr) {
-            res.status(200).end();
-            return;
-          }
-        }
-
-        const [userErr, user] = await to(
-          getUserByStripeId(prisma, {
-            stripeCustomerId: customer
-          })
+      if (requestId) {
+        const [updateRequestErr] = await to(
+          markRequestAsPaid(prisma, {
+            requestId,
+            stripeSessionId: id,
+          }),
         );
 
-        if (userErr) {
-          res.status(500).end();
-          return;
+        if (!updateRequestErr) {
+          return res.status(200).end();
         }
+      }
 
-        await incrementUserCredits(prisma, { userId: user.id });
+      const [userErr, user] = await to(
+        getUserByStripeId(prisma, {
+          stripeCustomerId: customer,
+        }),
+      );
 
-        break;
-      // case 'payment_intent.failed':
-      //   return res.status(200).end();
-      //   break;
-      default:
-        return res.status(400).end();
+      if (userErr) {
+        return res.status(500).end();
+      }
+
+      await incrementUserCredits(prisma, { userId: user.id });
+      return res.status(500).end();
     }
-  }
+
+    return res.status(400).end();
+  },
 );
 
 app.use(express.json());
@@ -140,7 +129,7 @@ app.post(
       .withMessage('This email address is invalid'),
     body('message')
       .trim()
-      .escape()
+      .escape(),
   ],
   async (req, res) => {
     const { errors } = validationResult(req);
@@ -155,11 +144,9 @@ app.post(
     await sendEmail(emailTemplate);
 
     res.send();
-  }
+  },
 );
 
 const port = process.env.APOLLO_SERVER_PORT;
 
-app.listen({ port }, () =>
-  console.log(`🚀 Server ready at http://localhost:${port}/graphql`)
-);
+app.listen({ port }, () => console.log(`🚀 Server ready at http://localhost:${port}/graphql`));

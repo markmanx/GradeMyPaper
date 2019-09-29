@@ -1,6 +1,6 @@
 const {
-  requestWithPaperFragment
-} = require('../fragments/requestWIthPaperFragment');
+  requestWithPaperFragment,
+} = require('../fragments/requestWithPaperFragment');
 
 const Query = {
   me: (parent, args, ctx) => {
@@ -8,9 +8,7 @@ const Query = {
 
     return user;
   },
-  papers: (parent, args, ctx) => {
-    return ctx.prisma.papers({});
-  },
+  papers: (parent, args, ctx) => ctx.prisma.papers({}),
   request: async (parent, { requestId }, ctx) => {
     const { user, prisma } = ctx;
 
@@ -25,14 +23,14 @@ const Query = {
 
     const confirmedRequests = await prisma
       .requests({
-        where: { paymentRef_not: null, user: { id: user.id } }
+        where: { paymentRef_not: null, user: { id: user.id } },
       })
       .$fragment(requestWithPaperFragment);
 
     return confirmedRequests;
-  }
+  },
 };
 
 module.exports = {
-  Query
+  Query,
 };

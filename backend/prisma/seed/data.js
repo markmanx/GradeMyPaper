@@ -1,10 +1,10 @@
 const BOARD = {
-  AQA: 'AQA'
+  AQA: 'AQA',
 };
 
 const QUALIFICATION = {
   ALEVEL: 'ALEVEL',
-  ASLEVEL: 'ASLEVEL'
+  ASLEVEL: 'ASLEVEL',
 };
 
 const papers = [
@@ -17,7 +17,7 @@ const papers = [
     questionsUrl:
       'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74021-QP-JUN18.PDF',
     markSchemeUrl:
-      'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74021-W-MS-JUN18.PDF'
+      'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74021-W-MS-JUN18.PDF',
   },
   {
     id: 'AQA-74011-W-MS-JUN18',
@@ -28,7 +28,7 @@ const papers = [
     questionsUrl:
       'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74011-QP-JUN18.PDF',
     markSchemeUrl:
-      'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74011-W-MS-JUN18.PDF'
+      'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74011-W-MS-JUN18.PDF',
   },
   {
     id: 'AQA-74022-QP-JUN18',
@@ -39,7 +39,7 @@ const papers = [
     questionsUrl:
       'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74022-QP-JUN18.PDF',
     markSchemeUrl:
-      'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74022-W-MS-JUN18.PDF'
+      'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74022-W-MS-JUN18.PDF',
   },
   {
     id: 'AQA-74012-QP-JUN18',
@@ -50,7 +50,7 @@ const papers = [
     questionsUrl:
       'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74012-QP-JUN18.PDF',
     markSchemeUrl:
-      'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74012-W-MS-JUN18.PDF'
+      'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74012-W-MS-JUN18.PDF',
   },
   {
     id: 'AQA-74023-QP-JUN18',
@@ -61,12 +61,12 @@ const papers = [
     questionsUrl:
       'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74023-QP-JUN18.PDF',
     markSchemeUrl:
-      'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74023-W-MS-JUN18.PDF'
-  }
+      'http://filestore.aqa.org.uk/sample-papers-and-mark-schemes/2018/june/AQA-74023-W-MS-JUN18.PDF',
+  },
 ];
 
 module.exports = {
   BOARD,
   QUALIFICATION,
-  papers
+  papers,
 };

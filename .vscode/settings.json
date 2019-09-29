@@ -1,4 +1,8 @@
 {
   "eslint.enable": true,
-  "eslint.workingDirectories": ["backend", "frontend"]
+  "eslint.workingDirectories": [
+    "backend",
+    "frontend"
+  ],
+  "eslint.autoFixOnSave": true
 }

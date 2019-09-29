@@ -6,5 +6,5 @@ const feedbackFragment = `
 `;
 
 module.exports = {
-  feedbackFragment
+  feedbackFragment,
 };

@@ -4,6 +4,6 @@ const { Mutation } = require('./Mutation');
 module.exports = {
   resolvers: {
     Query,
-    Mutation
-  }
+    Mutation,
+  },
 };

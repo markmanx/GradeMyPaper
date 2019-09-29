@@ -2,17 +2,17 @@ const {
   createStripeSession,
   getSku,
   createCustomer,
-  validateRequest
+  validateRequest,
 } = require('../helpers/stripeHelper/stripeHelper');
 const { to } = require('../helpers/utils');
 const { config } = require('../config');
 const {
-  requestWithPaperFragment
+  requestWithPaperFragment,
 } = require('../fragments/requestWithPaperFragment');
 const {
   getSignedUrl,
   getFileCount,
-  getDownloadPresignedUrl
+  getDownloadPresignedUrl,
 } = require('../helpers/fileUpload');
 
 const Mutation = {
@@ -20,10 +20,10 @@ const Mutation = {
     const { requestId } = args;
     const { user, prisma } = ctx;
 
-    const [validationErr, validRequest] = await to(
+    const [validationErr] = await to(
       validateRequest(prisma, {
-        requestId
-      })
+        requestId,
+      }),
     );
 
     if (validationErr) {
@@ -34,7 +34,7 @@ const Mutation = {
 
     if (!user.stripeCustomerId) {
       const [newCustomerErr, newCustomer] = await to(
-        createCustomer(user.email)
+        createCustomer(user.email),
       );
 
       if (newCustomerErr || !newCustomer) {
@@ -46,8 +46,8 @@ const Mutation = {
       const [updatedUserErr, updatedUser] = await to(
         prisma.updateUser({
           data: { stripeCustomerId },
-          where: { id: ctx.user.id }
-        })
+          where: { id: ctx.user.id },
+        }),
       );
 
       if (updatedUserErr || !updatedUser) {
@@ -64,7 +64,7 @@ const Mutation = {
     }
 
     const [sessionErr, session] = await to(
-      createStripeSession(stripeCustomerId, sku, requestId)
+      createStripeSession(stripeCustomerId, sku, requestId),
     );
 
     if (sessionErr || !session) {
@@ -80,7 +80,7 @@ const Mutation = {
     const request = await prisma
       .createRequest({
         paper: { connect: { id } },
-        user: { connect: { id: user.id } }
+        user: { connect: { id: user.id } },
       })
       .$fragment(requestWithPaperFragment);
 
@@ -91,7 +91,7 @@ const Mutation = {
     const { user, prisma } = ctx;
 
     const requests = await prisma.requests({
-      where: { id: requestId, user: { id: user.id } }
+      where: { id: requestId, user: { id: user.id } },
     });
 
     const request = requests[0] || null;
@@ -104,7 +104,7 @@ const Mutation = {
 
     const pageUpload = await prisma.createPageUpload({
       order: fileCount,
-      request: { connect: { id: request.id } }
+      request: { connect: { id: request.id } },
     });
 
     const url = await getSignedUrl(request.id, pageUpload.id);
@@ -117,8 +117,8 @@ const Mutation = {
 
     const [feedbackErr, feedback] = await to(
       prisma.feedbacks({
-        where: { request: { id: requestId, user: { id: user.id } } }
-      })
+        where: { request: { id: requestId, user: { id: user.id } } },
+      }),
     );
 
     if (feedbackErr || !feedback.length) {
@@ -126,19 +126,19 @@ const Mutation = {
     }
 
     const [urlErr, url] = await to(
-      getDownloadPresignedUrl(requestId, feedback[0].filename)
+      getDownloadPresignedUrl(requestId, feedback[0].filename),
     );
 
     if (urlErr) {
       throw new Error(
-        'Could not generate a presigned url for this feedback.  Please contact us directly.'
+        'Could not generate a presigned url for this feedback.  Please contact us directly.',
       );
     }
 
     return url;
-  }
+  },
 };
 
 module.exports = {
-  Mutation
+  Mutation,
 };

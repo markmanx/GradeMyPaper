@@ -10,5 +10,5 @@ const paperFragment = `
 `;
 
 module.exports = {
-  paperFragment
+  paperFragment,
 };

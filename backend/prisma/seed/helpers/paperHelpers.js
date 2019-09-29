@@ -1,13 +1,12 @@
-const createPapers = (papers, prisma) => {
-  return Promise.all(
-    papers.map(paper => {
-      const paperId = paper.id;
-      delete paper.id;
-      return prisma.createPaper({ ...paper, paperId });
-    })
-  );
-};
+const createPapers = (papers, prisma) => Promise.all(
+  papers.map((paper) => {
+    const p = { ...paper };
+    const paperId = p.id;
+    delete p.id;
+    return prisma.createPaper({ ...p, paperId });
+  }),
+);
 
 module.exports = {
-  createPapers
+  createPapers,
 };

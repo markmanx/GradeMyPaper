@@ -1,68 +1,63 @@
 const S3 = require('aws-sdk/clients/s3');
+
 const s3 = new S3({
   accessKeyId: process.env.AWS_ACCESS_KEY,
   secretAccessKey: process.env.AWS_ACCESS_SECRET,
-  region: process.env.AWS_S3_REGION
+  region: process.env.AWS_S3_REGION,
 });
 
 const params = {
   Bucket: 'grademypaper-s3-bucket',
-  Expires: 120
+  Expires: 120,
 };
 
 const uploadsDir = 'uploads';
 
-const getFileCount = requestId => {
-  return new Promise((resolve, reject) => {
-    s3.listObjectsV2(
-      { Bucket: params.Bucket, Prefix: `${uploadsDir}/${requestId}` },
-      (err, data) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(data.KeyCount);
+const getFileCount = (requestId) => new Promise((resolve, reject) => {
+  s3.listObjectsV2(
+    { Bucket: params.Bucket, Prefix: `${uploadsDir}/${requestId}` },
+    (err, data) => {
+      if (err) {
+        reject(err);
+        return;
       }
-    );
-  });
-};
+      resolve(data.KeyCount);
+    },
+  );
+});
 
-const getSignedUrl = (requestId, key) => {
-  return new Promise((resolve, reject) => {
-    s3.getSignedUrl(
-      'putObject',
-      { ...params, Key: `${uploadsDir}/${requestId}/${key}` },
-      (err, url) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-
-        resolve(url);
+const getSignedUrl = (requestId, key) => new Promise((resolve, reject) => {
+  s3.getSignedUrl(
+    'putObject',
+    { ...params, Key: `${uploadsDir}/${requestId}/${key}` },
+    (err, url) => {
+      if (err) {
+        reject(err);
+        return;
       }
-    );
-  });
-};
 
-const getDownloadPresignedUrl = (requestId, key) => {
-  return new Promise((resolve, reject) => {
-    s3.getSignedUrl(
-      'getObject',
-      { ...params, Key: `${uploadsDir}/${requestId}/${key}` },
-      (err, url) => {
-        if (err) {
-          reject(err);
-          return;
-        }
+      resolve(url);
+    },
+  );
+});
 
-        resolve(url);
+const getDownloadPresignedUrl = (requestId, key) => new Promise((resolve, reject) => {
+  s3.getSignedUrl(
+    'getObject',
+    { ...params, Key: `${uploadsDir}/${requestId}/${key}` },
+    (err, url) => {
+      if (err) {
+        reject(err);
+        return;
       }
-    );
-  });
-};
+
+      resolve(url);
+    },
+  );
+});
 
 module.exports = {
   getSignedUrl,
   getDownloadPresignedUrl,
-  getFileCount
+  getFileCount,
 };
