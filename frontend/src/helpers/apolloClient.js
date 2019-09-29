@@ -13,7 +13,7 @@ const trace = console.log;
 const history = createBrowserHistory();
 
 const httpLink = createHttpLink({
-  uri: `${process.env.REACT_APP_BACKEND_URL}/graphql`
+  uri: `${process.env.REACT_APP_GRAPHQL_ENDPOINT}/graphql`
 });
 
 const authLink = setContext((_, { headers }) => {
