@@ -13,7 +13,8 @@
     "generate:prisma:prod": "cd prisma && prisma generate",
     "generate:prisma": "cd prisma && prisma generate --env-file ../.env",
     "token:prisma": "prisma token --env-file ./.env",
-    "deploy:prisma": "cd prisma && prisma deploy --env-file ../.env"
+    "deploy:prisma": "cd prisma && prisma deploy --env-file ../.env",
+    "info:prisma": "cd prisma && prisma info --env-file ../.env"
   },
   "dependencies": {
     "apollo-server-express": "^2.8.1",
