@@ -76,7 +76,7 @@ export const ContactForm = ({ isOpen, handleClose }) => {
     setStatus(STATUS.LOADING);
 
     const res = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/sendMessage`,
+      `${process.env.REACT_APP_GRAPHQL_ENDPOINT}/sendMessage`,
       {
         method: 'POST',
         headers: {
