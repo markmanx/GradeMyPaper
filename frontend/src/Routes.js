@@ -5,7 +5,7 @@ import ReactGA from 'react-ga';
 import {
   LogoutScreen,
   HomeScreen,
-  Dashboard,
+  DashboardScreen,
   RequestFeedbackScreen
 } from './screens';
 import { ProtectedRoute } from './components';
@@ -19,7 +19,7 @@ const GlobalRoute = ({ history }) => {
     });
 
     return unlisten;
-  }, []);
+  }, [history]);
   return null;
 };
 
@@ -30,12 +30,12 @@ export const Routes = () => {
       <Switch>
         <Route path="/" exact component={HomeScreen} />
         <Route path="/logout" exact component={LogoutScreen} />
-        <Route
+        <ProtectedRoute
           path="/request-feedback/:requestId"
           exact
           component={RequestFeedbackScreen}
         />
-        <ProtectedRoute path="/dashboard" exact component={Dashboard} />
+        <ProtectedRoute path="/dashboard/:tab?" exact component={DashboardScreen} />
       </Switch>
     </>
   );

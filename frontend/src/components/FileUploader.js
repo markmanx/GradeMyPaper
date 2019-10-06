@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   }
 `;
 
-export const FileUploader = ({ width, onFirstFileUploaded, requestId }) => {
+export const FileUploader = ({ width, onFirstFileUploaded, requestId, className }) => {
   const [uppy, setUppy] = React.useState(null);
   const [mutation, { loading, error }] = useGeneratePresignedUrlMutation();
 
@@ -56,14 +56,16 @@ export const FileUploader = ({ width, onFirstFileUploaded, requestId }) => {
       });
 
     setUppy(uppy);
-  }, []);
+
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, [requestId]);
 
   if (!uppy) {
     return null;
   }
 
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <Dashboard
         uppy={uppy}
         plugins={['Webcam']}
