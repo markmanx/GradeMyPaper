@@ -58,16 +58,16 @@ export const FeedbackList = () => {
           />
         ))
       ) : (
-        <EmptyState>
-          <Padder paddingVertical={8}>
-            <InnerWrapper>
-              <Text color="white" bold>
-                No grades yet
+          <EmptyState>
+            <Padder paddingVertical={8}>
+              <InnerWrapper>
+                <Text color="white" bold>
+                  No grades yet
               </Text>
-            </InnerWrapper>
-          </Padder>
-        </EmptyState>
-      )}
+              </InnerWrapper>
+            </Padder>
+          </EmptyState>
+        )}
     </List>
   );
 };

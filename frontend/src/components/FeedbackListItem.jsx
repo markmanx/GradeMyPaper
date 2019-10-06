@@ -43,16 +43,11 @@ const ActionsWrapper = styled.div`
 
 export const FeedbackListItem = ({ request, onSeeFeedbackClicked }) => {
   const { feedback, paper } = request;
+  console.log(paper)
 
   return (
     <Wrapper>
-      <ListItem
-        button
-        onClick={() => {
-          window.open(paper.questionPaperUrl, '_blank');
-        }}
-        divider
-      >
+      <ListItem divider>
         <ListItemAvatar>
           <Avatar>
             {feedback ? (
@@ -60,10 +55,10 @@ export const FeedbackListItem = ({ request, onSeeFeedbackClicked }) => {
                 {feedback.grade}
               </Text>
             ) : (
-              <IconWrapper>
-                <AccessTime />
-              </IconWrapper>
-            )}
+                <IconWrapper>
+                  <AccessTime />
+                </IconWrapper>
+              )}
           </Avatar>
         </ListItemAvatar>
         <ListItemText
@@ -71,7 +66,7 @@ export const FeedbackListItem = ({ request, onSeeFeedbackClicked }) => {
           secondary={
             feedback
               ? `${feedback.marks} / ${paper.totalMarks}`
-              : 'Processing grade...'
+              : "We're currently grading your paper.  Your feedback will be ready soon."
           }
         />
         {feedback && (
