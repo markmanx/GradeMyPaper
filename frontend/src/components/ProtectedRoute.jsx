@@ -1,13 +1,15 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
+import { useRouter } from '../hooks/useRouter';
 
 import { useAuth0 } from '../context/auth0';
 
 export const ProtectedRoute = props => {
+  const { history } = useRouter();
   const { isAuthenticated, tokenExists } = useAuth0();
 
   if (!isAuthenticated || !tokenExists) {
-    return <div>You are not authorized to view this screen</div>;
+    history.push('/');
   }
 
   return <Route {...props} />;

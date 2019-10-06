@@ -30,7 +30,7 @@ export const Routes = () => {
       <Switch>
         <Route path="/" exact component={HomeScreen} />
         <Route path="/logout" exact component={LogoutScreen} />
-        <Route
+        <ProtectedRoute
           path="/request-feedback/:requestId"
           exact
           component={RequestFeedbackScreen}

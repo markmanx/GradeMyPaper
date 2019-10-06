@@ -57,8 +57,10 @@ export const RequestFeedbackScreen = ({ match }) => {
   }, []);
 
   React.useEffect(() => {
-    if (cardRef.current) onWindowResize();
-  }, [cardRef, data.request]);
+    if (data && data.request && cardRef.current) {
+      onWindowResize();
+    }
+  }, [cardRef, data]);
 
   if (!match.params.requestId || loading || error || !data) {
     return null;
