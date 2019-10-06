@@ -10,8 +10,9 @@ import {
 } from '../components';
 import { ThemeProviders } from '../context/ThemeProviders';
 
-export const Dashboard = () => {
-  const [tabIndex, setTabIndex] = React.useState(0);
+export const DashboardScreen = ({ match }) => {
+  const { params } = match;
+  const [tabIndex, setTabIndex] = React.useState(params.tab === 'grades' ? 1 : 0);
 
   const onTabChange = (_, tabIndex) => {
     setTabIndex(tabIndex);
