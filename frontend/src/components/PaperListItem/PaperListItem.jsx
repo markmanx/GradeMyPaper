@@ -8,6 +8,7 @@ import {
   ListItemSecondaryAction
 } from '@material-ui/core';
 
+import { useAuth0 } from '../../context/auth0';
 import { useInitiateRequestMutation } from '../../gql';
 import { Button } from '../../components';
 import aqaLogoImg from './assets/aqa-board.png';
@@ -39,6 +40,7 @@ const AqaLogo = styled.img`
 
 export const PaperListItem = ({ paper }) => {
   const { history } = useRouter();
+  const { isAuthenticated } = useAuth0();
   const [initiateRequestMutation] = useInitiateRequestMutation();
 
   const onGetFeedback = async () => {
@@ -84,7 +86,7 @@ export const PaperListItem = ({ paper }) => {
             >
               Download mark scheme
             </Button>
-            <Button onClick={onGetFeedback}>Get feedback</Button>
+            {isAuthenticated && <Button onClick={onGetFeedback}>Get feedback</Button>}
           </ActionsWrapper>
         </ListItemSecondaryAction>
       </ListItem>
