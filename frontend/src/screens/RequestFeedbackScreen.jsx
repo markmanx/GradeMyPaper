@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components/macro';
+import styled, { css } from 'styled-components/macro';
 import { Card, Divider, Grid } from '@material-ui/core';
 
 import { useRequestQuery } from '../gql';
@@ -30,6 +30,12 @@ const Navigation = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-end;
+`;
+
+const StyledFileUploader = styled(FileUploader)`
+  ${({ isVisible }) => css`
+    display: ${isVisible ? 'block' : 'none'};
+  `}
 `;
 
 export const RequestFeedbackScreen = ({ match }) => {
@@ -68,6 +74,7 @@ export const RequestFeedbackScreen = ({ match }) => {
 
   const { paper } = data.request;
 
+
   const { title, body } = STEP_CONTENT[step];
 
   const onFirstFileUploaded = () => {
@@ -78,9 +85,13 @@ export const RequestFeedbackScreen = ({ match }) => {
     setStep(step + 1);
   };
 
+  const onPrevious = () => {
+    setStep(step - 1);
+  }
+
   return (
-    <Section bgChildren={<SlantedBackground slantBottom />}>
-      <Padder paddingTop={10}>
+    <Section bgChildren={<SlantedBackground />}>
+      <Padder paddingVertical={10}>
         <Card elevation={5} ref={cardRef}>
           {!paper && (
             <Padder paddingVertical={2} paddingHorizontal={2}>
@@ -107,26 +118,24 @@ export const RequestFeedbackScreen = ({ match }) => {
                 </Grid>
               </Padder>
               <Padder paddingVertical={2} paddingHorizontal={2}>
-                {step === 0 && (
-                  <FileUploader
-                    width={cardWidth}
-                    onFirstFileUploaded={onFirstFileUploaded}
-                    requestId={requestId}
-                  />
-                )}
-
-                {step === 1 && <CheckoutButton requestId={requestId} />}
+                <StyledFileUploader
+                  width={cardWidth}
+                  onFirstFileUploaded={onFirstFileUploaded}
+                  requestId={requestId}
+                  isVisible={step === 0}
+                />
 
                 <Padder paddingTop={1}>
                   <Navigation>
-                    {step > 0 && <Button variant="text">Previous</Button>}
-                    <Button
+                    {step > 0 && <Button variant="text" onClick={onPrevious}>Previous</Button>}
+                    {step === 0 ? (<Button
                       variant="contained"
                       disabled={!firstFileUploaded}
                       onClick={onNext}
                     >
                       Next
-                    </Button>
+                    </Button>) :
+                      <CheckoutButton requestId={requestId} />}
                   </Navigation>
                 </Padder>
               </Padder>

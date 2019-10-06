@@ -27,7 +27,7 @@ export const CheckoutButton = ({ requestId }) => {
   };
 
   return (
-    <Button onClick={onCheckout} variant="container" color="primary">
+    <Button onClick={onCheckout} variant="contained" color="primary">
       Checkout
     </Button>
   );
